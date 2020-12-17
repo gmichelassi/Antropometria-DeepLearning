@@ -1,4 +1,6 @@
 import cv2
+import numpy as np
+from PIL import Image
 
 
 def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
@@ -17,7 +19,7 @@ def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
 	return cv2.resize(image, dim, interpolation=inter)
 
 
-def load_image():
+def preprocess_image():
 	img = cv2.imread('img/MIT-10.jpg')
 
 	face_cascade = cv2.CascadeClassifier('classifiers/haarcascade_frontalface_alt2.xml')
@@ -30,13 +32,41 @@ def load_image():
 	for (x, y, width, height) in faces:
 		cv2.rectangle(img, (x, y), (x + width, y + height), (255, 0, 0), 2)
 
+		# Recortar somente a face
+		image = Image.open('img/MIT-10.jpg')
+		detected_face = image.crop((x, y, x + width, y + height))
+		face = np.asarray(detected_face)
+		face_gray = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+
 		# roi stands for "region of interest"
 		roi_gray = gray_img[y:y + height, x: x + width]
 		roi_colorful = img[y:y + height, x: x + width]
 
-		eyes = eye_cascade.detectMultiScale(roi_gray)
+		# Encontrar os olhos
+		eyes = eye_cascade.detectMultiScale(face_gray)
 		for (eye_x, eye_y, eye_width, eye_height) in eyes:
 			cv2.rectangle(roi_colorful, (eye_x, eye_y), (eye_x + eye_width, eye_y + eye_height), (0, 255, 0), 2)
+
+			eyes_pair = face_gray[eye_y:eye_y + eye_height, eye_x:eye_x + eye_width]
+			canny = cv2.Canny(eyes_pair, 50, 245)
+			kernel = np.ones((3, 3), np.uint8)
+			gradient = cv2.morphologyEx(canny, cv2.MORPH_GRADIENT, kernel)
+
+			# find coordinates of the pupils
+			h, w = gradient.shape[0], gradient.shape[1]
+
+			y1, x1 = eye_coordinate(gradient, h, 0, w / 2)  # left eye
+			x1, y1 = abs(x1), abs(y1)  # normalizar geometricamente
+
+			y2, x2 = eye_coordinate(gradient, h, w / 2, w)  # right eye
+			x2, y2 = abs(x2), abs(y2)
+
+			dx, dy = abs(x2 - x1), abs(y2 - y1) * -1
+
+			z = Decimal(dy) / Decimal(dx)
+			alpha_complex = cmath.atan(z)
+			alpha = cmath.phase(alpha_complex)
+			alpha = alpha / 2
 
 	resized_img = ResizeWithAspectRatio(img, width=500)
 	cv2.imshow("Image", resized_img)
@@ -44,4 +74,4 @@ def load_image():
 
 
 if __name__ == '__main__':
-	load_image()
+	preprocess_image()
