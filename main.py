@@ -19,6 +19,23 @@ def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
 	return cv2.resize(image, dim, interpolation=inter)
 
 
+def eye_coordinate(img, h, w1, w2):
+	sumX, sumY = 0, 0
+	countX, countY = 0, 0
+	for i in range(math.floor(w1), math.floor(w2)):
+		for j in range(0, h):
+			px = img[j, i]
+			ent = px.astype(np.int)
+			if (ent <= 275) & (ent >= 250):
+				sumX = sumX + i
+				sumY = sumY + j
+				countX = countX + 1
+				countY = countY + 1
+	x = sumX / countX
+	y = sumY / countY
+	return x, y
+
+
 def preprocess_image():
 	img = cv2.imread('img/MIT-10.jpg')
 
@@ -55,10 +72,10 @@ def preprocess_image():
 			# find coordinates of the pupils
 			h, w = gradient.shape[0], gradient.shape[1]
 
-			y1, x1 = eye_coordinate(gradient, h, 0, w / 2)  # left eye
+			x1, y1 = eye_coordinate(gradient, h, 0, w / 2)  # left eye
 			x1, y1 = abs(x1), abs(y1)  # normalizar geometricamente
 
-			y2, x2 = eye_coordinate(gradient, h, w / 2, w)  # right eye
+			x2, y2 = eye_coordinate(gradient, h, w / 2, w)  # right eye
 			x2, y2 = abs(x2), abs(y2)
 
 			dx, dy = abs(x2 - x1), abs(y2 - y1) * -1
