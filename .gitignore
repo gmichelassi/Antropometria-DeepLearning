@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 .idea/
+img/casos/
+img/controles
