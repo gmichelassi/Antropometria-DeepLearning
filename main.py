@@ -8,7 +8,7 @@ from config import logger
 log = logger.getLogger(__file__)
 
 
-def FaceSize():
+def faceSize():
 	casos = glob(cfg.CASOS + cfg.DSCN_MASK)
 	controles = glob(cfg.CONTROLES + cfg.DSCN_MASK)
 	imgs = casos + controles
@@ -43,7 +43,7 @@ def FaceSize():
 	print(meanFaceSizeX, meanFaceSizeY)
 
 
-def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
+def resizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
 	(h, w) = image.shape[:2]
 
 	if width is None and height is None:
@@ -58,7 +58,7 @@ def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
 	return cv2.resize(image, dim, interpolation=inter)
 
 
-def rotate_image(image, angle):
+def rotateImage(image, angle):
 	"""
 	Rotates an OpenCV 2 / NumPy image about it's centre by the given angle
 	(in degrees). The returned image will be large enough to hold the entire
@@ -127,7 +127,7 @@ def rotate_image(image, angle):
 	return result
 
 
-def eye_coordinate(img, h, w1, w2):
+def findEyeCoordinates(img, h, w1, w2):
 	sumX, sumY = 0, 0
 	countX, countY = 0, 0
 	for i in range(math.floor(w1), math.floor(w2)):
@@ -144,7 +144,7 @@ def eye_coordinate(img, h, w1, w2):
 	return x, y
 
 
-def preprocess_image():
+def preprocessImage():
 	img = cv2.imread('img/MIT-10.jpg')
 
 	face_cascade = cv2.CascadeClassifier('classifiers/haarcascade_frontalface_alt2.xml')
@@ -180,10 +180,10 @@ def preprocess_image():
 			# find coordinates of the pupils
 			h, w = gradient.shape[0], gradient.shape[1]
 
-			x1, y1 = eye_coordinate(gradient, h, 0, w / 2)  # left eye
+			x1, y1 = findEyeCoordinates(gradient, h, 0, w / 2)  # left eye
 			x1, y1 = abs(x1), abs(y1)  # normalizar geometricamente
 
-			x2, y2 = eye_coordinate(gradient, h, w / 2, w)  # right eye
+			x2, y2 = findEyeCoordinates(gradient, h, w / 2, w)  # right eye
 			x2, y2 = abs(x2), abs(y2)
 
 			dx, dy = abs(x2 - x1), abs(y2 - y1) * -1
@@ -193,10 +193,10 @@ def preprocess_image():
 			alpha = cmath.phase(alpha_complex)
 			alpha = alpha / 2
 
-	resized_img = ResizeWithAspectRatio(img, width=500)
+	resized_img = resizeWithAspectRatio(img, width=500)
 	cv2.imshow("Image", resized_img)
 	cv2.waitKey(0)
 
 
 if __name__ == '__main__':
-	FaceSize()
+	faceSize()
