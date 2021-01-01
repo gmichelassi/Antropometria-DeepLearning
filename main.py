@@ -8,25 +8,30 @@ from config import logger
 log = logger.getLogger(__file__)
 
 
-def faceSize():
-	casos = glob(cfg.CASOS + cfg.DSCN_MASK)
-	controles = glob(cfg.CONTROLES + cfg.DSCN_MASK)
-	imgs = casos + controles
+def faceSize(image_folder):
+	log.info('Finding images')
+	images = []
+	for img in image_folder:
+		images = images + glob(img)
+
+	log.info('{0} images found'.format(len(images)))
 
 	FacesSizeX, FacesSizeY = [], []
 
+	log.info('Loading face detector')
 	face_cascade = cv2.CascadeClassifier('classifiers/haarcascade_frontalface_alt2.xml')
 
-	for img in imgs:
-		loaded_img = cv2.imread(img)
+	for image in images:
+		loaded_img = cv2.imread(image)
 		gray_img = cv2.cvtColor(loaded_img, cv2.COLOR_BGR2GRAY)
+
+		log.info('Findind face for image {0}'.format(image))
 		faces = face_cascade.detectMultiScale(gray_img, 1.3, 5, cv2.CASCADE_SCALE_IMAGE, (20, 20))
 
 		if 0 < len(faces) <= 1:
 			for (x, y, width, height) in faces:
 				cv2.rectangle(loaded_img, (x, y), (x + width, y + height), (255, 0, 0), 2)
-				print(width)
-				print(height)
+
 				FacesSizeX.append(width)
 				FacesSizeY.append(height)
 			# resized_img = ResizeWithAspectRatio(loaded_img, width=500)
@@ -34,13 +39,18 @@ def faceSize():
 			# cv2.waitKey(0)
 			# cv2.destroyAllWindows()
 		else:
-			print('More than one face found for image ' + img)
+			log.info('More than one face found for image ' + image)
 
+	log.info('Calculating mean, max, min and std for all faces detected')
 	meanFaceSizeX, meanFaceSizeY = np.mean(FacesSizeX), np.mean(FacesSizeY)
 	minFaceSizeX, minFaceSizeY = np.min(FacesSizeX), np.min(FacesSizeY)
 	maxFaceSizeX, maxFaceSizeY = np.max(FacesSizeX), np.max(FacesSizeY)
 	stdFaceSizeX, stdFaceSizeY = np.std(FacesSizeX), np.std(FacesSizeY)
-	print(meanFaceSizeX, meanFaceSizeY)
+
+	log.info('Mean face size X: {0} Y: {1}'.format(meanFaceSizeX, meanFaceSizeY))
+	log.info('Max face size  X: {0} Y: {1}'.format(maxFaceSizeX, maxFaceSizeY))
+	log.info('Min face size  X: {0} Y: {1}'.format(minFaceSizeX, minFaceSizeY))
+	log.info('Std face size  X: {0} Y: {1}'.format(stdFaceSizeX, stdFaceSizeY))
 
 
 def resizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
@@ -199,4 +209,6 @@ def preprocessImage():
 
 
 if __name__ == '__main__':
-	faceSize()
+	casos = cfg.CASOS + cfg.DSCN_MASK
+	controles = cfg.CONTROLES + cfg.DSCN_MASK
+	faceSize([casos, controles])
