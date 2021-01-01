@@ -1,6 +1,46 @@
 import cv2
 import numpy as np
+from glob import glob
 from PIL import Image
+from config import config as cfg
+from config import logger
+
+log = logger.getLogger(__file__)
+
+
+def FaceSize():
+	casos = glob(cfg.CASOS + cfg.DSCN_MASK)
+	controles = glob(cfg.CONTROLES + cfg.DSCN_MASK)
+	imgs = casos + controles
+
+	FacesSizeX, FacesSizeY = [], []
+
+	face_cascade = cv2.CascadeClassifier('classifiers/haarcascade_frontalface_alt2.xml')
+
+	for img in imgs:
+		loaded_img = cv2.imread(img)
+		gray_img = cv2.cvtColor(loaded_img, cv2.COLOR_BGR2GRAY)
+		faces = face_cascade.detectMultiScale(gray_img, 1.3, 5, cv2.CASCADE_SCALE_IMAGE, (20, 20))
+
+		if 0 < len(faces) <= 1:
+			for (x, y, width, height) in faces:
+				cv2.rectangle(loaded_img, (x, y), (x + width, y + height), (255, 0, 0), 2)
+				print(width)
+				print(height)
+				FacesSizeX.append(width)
+				FacesSizeY.append(height)
+			# resized_img = ResizeWithAspectRatio(loaded_img, width=500)
+			# cv2.imshow('Image', resized_img)
+			# cv2.waitKey(0)
+			# cv2.destroyAllWindows()
+		else:
+			print('More than one face found for image ' + img)
+
+	meanFaceSizeX, meanFaceSizeY = np.mean(FacesSizeX), np.mean(FacesSizeY)
+	minFaceSizeX, minFaceSizeY = np.min(FacesSizeX), np.min(FacesSizeY)
+	maxFaceSizeX, maxFaceSizeY = np.max(FacesSizeX), np.max(FacesSizeY)
+	stdFaceSizeX, stdFaceSizeY = np.std(FacesSizeX), np.std(FacesSizeY)
+	print(meanFaceSizeX, meanFaceSizeY)
 
 
 def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
@@ -159,4 +199,4 @@ def preprocess_image():
 
 
 if __name__ == '__main__':
-	preprocess_image()
+	FaceSize()
