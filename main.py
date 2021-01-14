@@ -209,6 +209,21 @@ def preprocessImage():
 
 
 if __name__ == '__main__':
-	casos = cfg.CASOS + cfg.DSCN_MASK
-	controles = cfg.CONTROLES + cfg.DSCN_MASK
-	faceSize([casos, controles])
+	casos 		= cfg.CASOS + cfg.DSCN_MASK
+	controles 	= cfg.CONTROLES + cfg.DSCN_MASK
+
+	a22q11 		= cfg.a22q11 + cfg.IMAGE_MASK
+	angelman 	= cfg.ANGELMAN + cfg.IMAGE_MASK
+	apert 		= cfg.APERT + cfg.IMAGE_MASK
+	cdl 		= cfg.CDL + cfg.IMAGE_MASK
+	down 		= cfg.DOWN + cfg.IMAGE_MASK
+	fragilex 	= cfg.FRAGILEX + cfg.IMAGE_MASK
+	marfan 		= cfg.MARFAN + cfg.IMAGE_MASK
+	progeria 	= cfg.PROGERIA + cfg.IMAGE_MASK
+	sotos 		= cfg.SOTOS + cfg.IMAGE_MASK
+	treacher 	= cfg.TREACHER + cfg.IMAGE_MASK
+	turner 		= cfg.TURNER + cfg.IMAGE_MASK
+	williams 	= cfg.WILLIAMS + cfg.IMAGE_MASK
+
+	# faceSize([casos, controles])
+	faceSize([casos, controles, a22q11, angelman, apert, cdl, down, fragilex, marfan, progeria, sotos, treacher, turner, williams])
