@@ -6,6 +6,8 @@ OUTPUT_DIR = ROOT_DIR + '/output'
 IMG_DIR = ROOT_DIR + '/img'
 ROTATED = OUTPUT_DIR + '/rotated/'
 CROPPED = OUTPUT_DIR + '/cropped/'
+EYES = OUTPUT_DIR + '/eyes/'
+GRADIENT = OUTPUT_DIR + '/gradient/'
 
 # Máscaras para o glob
 CASOS 		= IMG_DIR + '/casos'
