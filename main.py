@@ -197,70 +197,75 @@ def preprocessImage(img_folder, show_result=False):
 		log.info("Found {0} faces!".format(len(faces)))
 
 		for (x, y, width, height) in faces:
-			# cv2.rectangle(original_image, (x, y), (x + width, y + height), (255, 0, 0), 2)
+			try:
+				# cv2.rectangle(original_image, (x, y), (x + width, y + height), (255, 0, 0), 2)
 
-			# Recortar somente a face
-			found_image = Image.open(image)
-			detected_face = found_image.crop((x, y, x + width, y + height))
-			face = np.asarray(detected_face)
-			face_gray = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+				# Recortar somente a face
+				found_image = Image.open(image)
+				detected_face = found_image.crop((x, y, x + width, y + height))
+				face = np.asarray(detected_face)
+				face_gray = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
 
-			# roi stands for "region of interest"
-			# roi_gray = gray_img[y:y + height, x: x + width]
-			# roi_colorful = original_image[y:y + height, x: x + width]
+				# roi stands for "region of interest"
+				# roi_gray = gray_img[y:y + height, x: x + width]
+				# roi_colorful = original_image[y:y + height, x: x + width]
 
-			# Encontrar os olhos
-			log.info('Finding eye for {0}'.format(img_name))
-			eyes = eye_cascade.detectMultiScale(face_gray)
+				# Encontrar os olhos
+				log.info('Finding eye for {0}'.format(img_name))
+				eyes = eye_cascade.detectMultiScale(face_gray)
 
-			for (eye_x, eye_y, eye_width, eye_height) in eyes:
-				# cv2.rectangle(roi_colorful, (eye_x, eye_y), (eye_x + eye_width, eye_y + eye_height), (0, 255, 0), 2)
-				eyes_pair = face_gray[eye_y:eye_y + eye_height, eye_x:eye_x + eye_width]
+				for (eye_x, eye_y, eye_width, eye_height) in eyes:
+					# cv2.rectangle(roi_colorful, (eye_x, eye_y), (eye_x + eye_width, eye_y + eye_height), (0, 255, 0), 2)
+					eyes_pair = face_gray[eye_y:eye_y + eye_height, eye_x:eye_x + eye_width]
 
-			cv2.imwrite(eyes_path, eyes_pair)
-			canny = cv2.Canny(eyes_pair, 50, 245)
-			kernel = np.ones((3, 3), np.uint8)
-			gradient = cv2.morphologyEx(canny, cv2.MORPH_GRADIENT, kernel)
-			cv2.imwrite(gradient_path, gradient)
+				canny = cv2.Canny(eyes_pair, 50, 245)
+				kernel = np.ones((3, 3), np.uint8)
+				gradient = cv2.morphologyEx(canny, cv2.MORPH_GRADIENT, kernel)
 
-			# find coordinates of the pupils
-			h, w = gradient.shape[0], gradient.shape[1]
-			x1, y1 = findEyeCoordinates(gradient, h, 0, w / 2)  # left eye
-			x1, y1 = abs(x1), abs(y1)  # normalizar geometricamente
+				# find coordinates of the pupils
+				h, w = gradient.shape[0], gradient.shape[1]
+				x1, y1 = findEyeCoordinates(gradient, h, 0, w / 2)  # left eye
+				x1, y1 = abs(x1), abs(y1)  # normalizar geometricamente
 
-			x2, y2 = findEyeCoordinates(gradient, h, w / 2, w)  # right eye
-			x2, y2 = abs(x2), abs(y2)
+				x2, y2 = findEyeCoordinates(gradient, h, w / 2, w)  # right eye
+				x2, y2 = abs(x2), abs(y2)
 
-			dx, dy = abs(x2 - x1), abs(y2 - y1) * -1
+				dx, dy = abs(x2 - x1), abs(y2 - y1) * -1
 
-			log.info('Finding angle to rotate image')
-			z = Decimal(dy) / Decimal(dx)
-			alpha_complex = cmath.atan(z)
-			alpha = cmath.phase(alpha_complex)
-			alpha = alpha / 2
+				log.info('Finding angle to rotate image')
+				z = Decimal(dy) / Decimal(dx)
+				alpha_complex = cmath.atan(z)
+				alpha = cmath.phase(alpha_complex)
+				alpha = alpha / 2
 
-			log.info('Angle found {0}'.format(alpha))
-			log.info('Rotating image...')
+				log.info('Angle found {0}'.format(alpha))
+				log.info('Rotating image...')
 
-			img_to_rotate = Image.open(image)
-			rotated_image = img_to_rotate.rotate(-alpha)
+				img_to_rotate = Image.open(image)
+				rotated_image = img_to_rotate.rotate(-alpha)
+				image_rotated = cv2.imread(rotated_path)
 
-			rotated_image.save(rotated_path)
+				log.info('Cropping image around face...')
+				croppedImage = cropImage(image_rotated, x, y, 280, 280)
 
-			image_rotated = cv2.imread(rotated_path)
+				if show_result:
+					log.info('Showing result, press something to continue')
+					resized_img = resizeWithAspectRatio(croppedImage, width=250)
+					cv2.imshow("Result", resized_img)
+					cv2.waitKey(0)
 
-			log.info('Cropping image around face...')
-			croppedImage = cropImage(image_rotated, x, y, 280, 280)
+				log.info('Preprocessing done for {0}, saving outputs'.format(img_name))
+				cv2.imwrite(eyes_path, eyes_pair)
+				cv2.imwrite(gradient_path, gradient)
+				rotated_image.save(rotated_path)
+				cv2.imwrite(cropped_path, croppedImage)
 
-			cv2.imwrite(cropped_path, croppedImage)
-
-			if show_result:
-				log.info('Showing result, press something to continue')
-				resized_img = resizeWithAspectRatio(croppedImage, width=250)
-				cv2.imshow("Result", resized_img)
-				cv2.waitKey(0)
-
-			log.info('Preprocessing done for {0}'.format(img_name))
+			except ZeroDivisionError as zde:
+				continue
+			except ValueError as ve:
+				continue
+			except IOError as ioe:
+				continue
 
 
 if __name__ == '__main__':
