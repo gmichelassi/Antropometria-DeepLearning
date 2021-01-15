@@ -12,6 +12,13 @@ from config import logger
 log = logger.getLogger(__file__)
 
 
+def handleError(error, msg):
+	log.info('Error {0}'.format(error))
+	f = open('output/error.txt', 'a')
+	f.write(msg + '\n')
+	f.close()
+
+
 def faceSize(image_folder):
 	log.info('Finding images')
 	images = []
@@ -243,6 +250,7 @@ def preprocessImage(img_folder, show_result=False):
 
 				img_to_rotate = Image.open(image)
 				rotated_image = img_to_rotate.rotate(-alpha)
+				rotated_image.save(rotated_path)
 				image_rotated = cv2.imread(rotated_path)
 
 				log.info('Cropping image around face...')
@@ -257,15 +265,16 @@ def preprocessImage(img_folder, show_result=False):
 				log.info('Preprocessing done for {0}, saving outputs'.format(img_name))
 				cv2.imwrite(eyes_path, eyes_pair)
 				cv2.imwrite(gradient_path, gradient)
-				rotated_image.save(rotated_path)
 				cv2.imwrite(cropped_path, croppedImage)
 
 			except ZeroDivisionError as zde:
-				continue
+				handleError(zde, 'It was not possible to preprocesses image {0} because of error {1}'.format(img_name, zde))
 			except ValueError as ve:
-				continue
+				handleError(ve, 'It was not possible to preprocesses image {0} because of error {1}'.format(img_name, ve))
 			except IOError as ioe:
-				continue
+				handleError(ioe, 'It was not possible to preprocesses image {0} because of error {1}'.format(img_name, ioe))
+			except TypeError as te:
+				handleError(te, 'It was not possible to preprocesses image {0} because of error {1}'.format(img_name, te))
 
 
 if __name__ == '__main__':
