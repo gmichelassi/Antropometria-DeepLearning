@@ -166,7 +166,7 @@ def findEyeCoordinates(img, h, w1, w2):
 		for j in range(0, int(h)):
 			px = img[j, i]
 			ent = px.astype(np.int)
-			if (ent <= 275) and (ent >= 250):
+			if 250 <= ent <= 275:
 				sumX = sumX + i
 				sumY = sumY + j
 				countX = countX + 1
@@ -176,7 +176,7 @@ def findEyeCoordinates(img, h, w1, w2):
 	return x, y
 
 
-def preprocessImage(img_folder, show_result=False):
+def preprocessImage(img_folder, crop_width, crop_height, show_result=False):
 	log.info('Finding images')
 	images = []
 	for img_path in img_folder:
@@ -254,7 +254,7 @@ def preprocessImage(img_folder, show_result=False):
 				image_rotated = cv2.imread(rotated_path)
 
 				log.info('Cropping image around face...')
-				croppedImage = cropImage(image_rotated, x, y, 280, 280)
+				croppedImage = cropImage(image_rotated, x, y, crop_width, crop_height)
 
 				if show_result:
 					log.info('Showing result, press something to continue')
@@ -297,4 +297,4 @@ if __name__ == '__main__':
 	all_images = [casos, controles, a22q11, angelman, apert, cdl, down, fragilex, marfan, progeria, sotos, treacher, turner, williams]
 	casos_controles_images = [casos, controles]
 
-	preprocessImage(casos_controles_images, False)
+	preprocessImage(casos_controles_images, 584, 584, False)
