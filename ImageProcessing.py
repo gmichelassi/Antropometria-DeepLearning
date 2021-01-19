@@ -191,10 +191,12 @@ def preprocessImage(img_folder, crop_width, crop_height, show_result=False):
 	for image in images:
 		# Onde salvar as imagens
 		img_absolute_path, img_name = os.path.split(image)
-		eyes_path = cfg.EYES + img_name
-		gradient_path = cfg.GRADIENT + img_name
-		rotated_path = cfg.ROTATED + img_name
-		cropped_path = cfg.CROPPED + img_name
+		path, label 				= os.path.split(img_absolute_path)
+
+		eyes_path 		= cfg.EYES 		+ '/' + label + '/' + img_name
+		gradient_path 	= cfg.GRADIENT 	+ '/' + label + '/' + img_name
+		rotated_path 	= cfg.ROTATED 	+ '/' + label + '/' + img_name
+		cropped_path 	= cfg.CROPPED 	+ '/' + label + '/' + img_name
 
 		original_image = cv2.imread(image)
 		gray_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
@@ -278,21 +280,21 @@ def preprocessImage(img_folder, crop_width, crop_height, show_result=False):
 
 
 if __name__ == '__main__':
-	casos = cfg.CASOS + cfg.DSCN_MASK
-	controles = cfg.CONTROLES + cfg.DSCN_MASK
+	casos 		= cfg.IMG_DIR + cfg.CASOS + cfg.DSCN_MASK
+	controles 	= cfg.IMG_DIR + cfg.CONTROLES + cfg.DSCN_MASK
 
-	a22q11 = cfg.a22q11 + cfg.IMAGE_MASK
-	angelman = cfg.ANGELMAN + cfg.IMAGE_MASK
-	apert = cfg.APERT + cfg.IMAGE_MASK
-	cdl = cfg.CDL + cfg.IMAGE_MASK
-	down = cfg.DOWN + cfg.IMAGE_MASK
-	fragilex = cfg.FRAGILEX + cfg.IMAGE_MASK
-	marfan = cfg.MARFAN + cfg.IMAGE_MASK
-	progeria = cfg.PROGERIA + cfg.IMAGE_MASK
-	sotos = cfg.SOTOS + cfg.IMAGE_MASK
-	treacher = cfg.TREACHER + cfg.IMAGE_MASK
-	turner = cfg.TURNER + cfg.IMAGE_MASK
-	williams = cfg.WILLIAMS + cfg.IMAGE_MASK
+	a22q11 		= cfg.IMG_DIR + cfg.a22q11 + cfg.IMAGE_MASK
+	angelman 	= cfg.IMG_DIR + cfg.ANGELMAN + cfg.IMAGE_MASK
+	apert 		= cfg.IMG_DIR + cfg.APERT + cfg.IMAGE_MASK
+	cdl 		= cfg.IMG_DIR + cfg.CDL + cfg.IMAGE_MASK
+	down 		= cfg.IMG_DIR + cfg.DOWN + cfg.IMAGE_MASK
+	fragilex 	= cfg.IMG_DIR + cfg.FRAGILEX + cfg.IMAGE_MASK
+	marfan 		= cfg.IMG_DIR + cfg.MARFAN + cfg.IMAGE_MASK
+	progeria 	= cfg.IMG_DIR + cfg.PROGERIA + cfg.IMAGE_MASK
+	sotos 		= cfg.IMG_DIR + cfg.SOTOS + cfg.IMAGE_MASK
+	treacher 	= cfg.IMG_DIR + cfg.TREACHER + cfg.IMAGE_MASK
+	turner 		= cfg.IMG_DIR + cfg.TURNER + cfg.IMAGE_MASK
+	williams 	= cfg.IMG_DIR + cfg.WILLIAMS + cfg.IMAGE_MASK
 
 	all_images = [casos, controles, a22q11, angelman, apert, cdl, down, fragilex, marfan, progeria, sotos, treacher, turner, williams]
 	casos_controles_images = [casos, controles]
