@@ -9,6 +9,9 @@ from keras.layers import Dropout, Flatten, Dense
 from glob import glob
 from config import config as cfg
 from config import constants as cte
+from config import logger
+
+log = logger.getLogger(__file__)
 
 
 def mean(metric):
@@ -22,6 +25,7 @@ def mean(metric):
 def loadData(img_folder):
 	images = []
 	for img_path in img_folder:
+		log.info("Loading {0} images".format(img_path))
 		images = images + glob(img_path)
 
 	X, y = [], []
@@ -41,12 +45,16 @@ def main():
 
 	X, y = loadData([casos, controles])
 
+	k = 0
 	n_splits = 10
 	cv = StratifiedKFold(n_splits=n_splits, random_state=707878)
+	log.info("Running cross validation k={0}".format(n_splits))
+
 	for train_index, test_index in cv.split(X, y):
 		X_train, y_train = X[train_index], y[train_index]
 		X_test, y_test = X[test_index], y[test_index]
 
+		log.info("#{0} - Building Neural Network".format(k))
 		vgg_model = VGGFace(include_top=False, input_shape=(584, 584, 3), pooling='max')
 		last_layer = vgg_model.get_layer('pool5').output
 		x = Dropout(.2, trainable=False, name='custom_dropout1')(last_layer)
@@ -59,13 +67,13 @@ def main():
 
 		loss, accuracy = [], []
 		try:
-			# Compilar o modelo escolhido
+			log.info("#{0} - Compiling built model...".format(k))
 			custom_vgg_model.compile(optimizer='', loss='', metrics=['accuracy'])
 
-			# Treinar o modelo
+			log.info("#{0} - Training model...".format(k))
 			custom_vgg_model.fit(X_train, y_train, epochs=10)
 
-			# Fazer a avaliação do modelo de acordo com as métricas definidas
+			log.info("#{0} - Evaluating model...".format(k))
 			test_loss, test_acc = custom_vgg_model.evaluate(X_test, y_test, verbose=2)
 
 			loss.append(test_loss)
@@ -79,9 +87,19 @@ def main():
 			mean_accuracy = mean(accuracy)
 			mean_loss = mean(loss)
 
-			# Salvar resultados?
+			log.info("#{0} - Mean accuracy achieved: {1}".format(k, mean_accuracy))
+			log.info("#{0} - Mean loss: {1}".format(k, mean_loss))
 		else:
-			pass
+			log.info("#{0} Something went wrong when computing metrics and loss".format(k))
+
+		k = k + 1
+
+		# parametros
+		# separar os otimizadores
+		# funcoes de perda
+		# estrutura da rede pode variar? creio que sim
+		# learning rate
+		# epochs
 
 
 if __name__ == '__main__':
