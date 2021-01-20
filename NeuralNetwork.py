@@ -54,7 +54,7 @@ def main():
 		X_train, y_train = X[train_index], y[train_index]
 		X_test, y_test = X[test_index], y[test_index]
 
-		log.info("#{0} - Building Neural Network".format(k))
+		log.info("#{0} - Building Neural Network architecture".format(k))
 		vgg_model = VGGFace(include_top=False, input_shape=(584, 584, 3), pooling='max')
 		last_layer = vgg_model.get_layer('pool5').output
 		x = Dropout(.2, trainable=False, name='custom_dropout1')(last_layer)
@@ -93,13 +93,6 @@ def main():
 			log.info("#{0} Something went wrong when computing metrics and loss".format(k))
 
 		k = k + 1
-
-		# parametros
-		# separar os otimizadores
-		# funcoes de perda
-		# estrutura da rede pode variar? creio que sim
-		# learning rate
-		# epochs
 
 
 if __name__ == '__main__':
