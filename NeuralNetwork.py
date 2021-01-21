@@ -45,7 +45,7 @@ def loadData(img_folder):
 		X.append(cv2.imread(image))
 		y.append(cte.LABELS[label])
 
-	return np.array(X, dtype=object), np.array(y, dtype=np.int)
+	return X, y
 
 
 def main():
@@ -71,11 +71,6 @@ def main():
 						for train_index, test_index in cv.split(X, y):
 							X_train, y_train 	= X[train_index], y[train_index]
 							X_test, y_test 		= X[test_index], y[test_index]
-
-							print(type(X_train))
-							print(type(X_train[0]))
-							print(type(X_train[0][0]))
-							print(type(X_train[0][0][0]))
 
 							log.info("#{0} - Building Neural Network architecture".format(k))
 							vgg_model = VGGFace(include_top=False, input_shape=(584, 584, 3), pooling='max')
