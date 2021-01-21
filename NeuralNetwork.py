@@ -7,11 +7,20 @@ from keras.engine import Model
 from keras_vggface.vggface import VGGFace
 from keras.layers import Dropout, Flatten, Dense
 from glob import glob
+from utils.classifier import Classifier
 from config import config as cfg
 from config import constants as cte
 from config import logger
 
 log = logger.getLogger(__file__)
+
+
+def buildNNArchiteture(layers, last_layer):
+	x = last_layer
+	for layer in layers:
+		x = (layer)(x)
+
+	return x
 
 
 def mean(metric):
@@ -36,7 +45,7 @@ def loadData(img_folder):
 		X.append(cv2.imread(image))
 		y.append(cte.LABELS[label])
 
-	return X, y
+	return np.array(X, dtype=object), np.array(y, dtype=np.int)
 
 
 def main():
@@ -45,54 +54,66 @@ def main():
 
 	X, y = loadData([casos, controles])
 
-	k = 0
-	n_splits = 10
-	cv = StratifiedKFold(n_splits=n_splits, random_state=707878)
-	log.info("Running cross validation k={0}".format(n_splits))
+	classifier = Classifier()
+	params = classifier.getParams()
 
-	for train_index, test_index in cv.split(X, y):
-		X_train, y_train = X[train_index], y[train_index]
-		X_test, y_test = X[test_index], y[test_index]
+	for layers in params['layers']:
+		for epochs in params['epochs']:
+			for losses in params['losses']:
+				for metrics in params['metrics']:
+					for optimizer in params['optimizers']:
 
-		log.info("#{0} - Building Neural Network architecture".format(k))
-		vgg_model = VGGFace(include_top=False, input_shape=(584, 584, 3), pooling='max')
-		last_layer = vgg_model.get_layer('pool5').output
-		x = Dropout(.2, trainable=False, name='custom_dropout1')(last_layer)
-		x = Flatten(name='flatten')(x)
-		x = Dense(16, activation='relu', name='custom_fc1')(x)
-		x = Dropout(.2, trainable=False, name='custom_dropout_2')(x)
-		x = Dense(16, activation='relu', name='custom_fc2')(x)
-		out = Dense(16, activation='relu', name='custom_fc3')(x)
-		custom_vgg_model = Model(vgg_model.input, out)
+						k = 0
+						n_splits = 10
+						cv = StratifiedKFold(n_splits=n_splits)
+						log.info("Running cross validation k={0}".format(n_splits))
 
-		loss, accuracy = [], []
-		try:
-			log.info("#{0} - Compiling built model...".format(k))
-			custom_vgg_model.compile(optimizer='', loss='', metrics=['accuracy'])
+						for train_index, test_index in cv.split(X, y):
+							X_train, y_train 	= X[train_index], y[train_index]
+							X_test, y_test 		= X[test_index], y[test_index]
 
-			log.info("#{0} - Training model...".format(k))
-			custom_vgg_model.fit(X_train, y_train, epochs=10)
+							print(type(X_train))
+							print(type(X_train[0]))
+							print(type(X_train[0][0]))
+							print(type(X_train[0][0][0]))
 
-			log.info("#{0} - Evaluating model...".format(k))
-			test_loss, test_acc = custom_vgg_model.evaluate(X_test, y_test, verbose=2)
+							log.info("#{0} - Building Neural Network architecture".format(k))
+							vgg_model = VGGFace(include_top=False, input_shape=(584, 584, 3), pooling='max')
+							last_layer = vgg_model.get_layer('pool5').output
 
-			loss.append(test_loss)
-			accuracy.append(test_acc)
-		except ValueError as ve:
-			pass
-		except RuntimeError as re:
-			pass
+							out = buildNNArchiteture(layers, last_layer)
 
-		if len(loss) == n_splits and len(accuracy) == n_splits:
-			mean_accuracy = mean(accuracy)
-			mean_loss = mean(loss)
+							custom_vgg_model = Model(vgg_model.input, out)
 
-			log.info("#{0} - Mean accuracy achieved: {1}".format(k, mean_accuracy))
-			log.info("#{0} - Mean loss: {1}".format(k, mean_loss))
-		else:
-			log.info("#{0} Something went wrong when computing metrics and loss".format(k))
+							loss, accuracy = [], []
+							try:
+								log.info("#{0} - Compiling built model...".format(k))
+								custom_vgg_model.compile(optimizer=optimizer, loss=losses, metrics=metrics)
 
-		k = k + 1
+								log.info("#{0} - Training model...".format(k))
+								custom_vgg_model.fit(X_train, y_train, epochs=epochs)
+
+								log.info("#{0} - Evaluating model...".format(k))
+								test_loss, test_acc = custom_vgg_model.evaluate(X_test, y_test, verbose=2)
+
+								loss.append(test_loss)
+								accuracy.append(test_acc)
+							except ValueError as ve:
+								log.info('[ValueError] Could not perform train and test beacause of error {0}'.format(ve))
+							except RuntimeError as re:
+								log.info('[RuntimeError] Could not perform train and test beacause of error {0}'.format(re))
+
+							if len(loss) == n_splits and len(accuracy) == n_splits:
+								mean_accuracy = mean(accuracy)
+								mean_loss = mean(loss)
+
+								log.info("#{0} - Mean accuracy achieved: {1}".format(k, mean_accuracy))
+								log.info("#{0} - Mean loss: {1}".format(k, mean_loss))
+							else:
+								log.info("#{0} - Something went wrong when computing metrics and loss".format(k))
+
+							k = k + 1
+							break
 
 
 if __name__ == '__main__':
