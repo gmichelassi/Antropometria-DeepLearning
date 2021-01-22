@@ -1,7 +1,7 @@
 from tensorflow.keras.optimizers import SGD, Adam
 from tensorflow.keras.losses import binary_crossentropy, categorical_crossentropy
 from tensorflow.keras.metrics import Accuracy, Precision, Recall, AUC
-from keras.layers import Dropout, Flatten, Dense
+from keras.layers import Dropout, Flatten, Dense, BatchNormalization
 
 
 class Classifier:
@@ -23,6 +23,15 @@ class Classifier:
 				Dense(16, activation='relu', name='custom_fc2'),
 				Dense(16, activation='relu', name='custom_fc3')
 			],
+			[
+				Dense(16, activation='relu', name='custom_fc1'),
+				BatchNormalization(),
+				Dense(16, activation='relu', name='custom_fc1'),
+				BatchNormalization(),
+				Dense(16, activation='relu', name='custom_fc1'),
+				BatchNormalization(),
+				Dropout(.5, trainable=False, name='custom_dropout_1'),
+			]
 		]
 
 	def getParams(self):
