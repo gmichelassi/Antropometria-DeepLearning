@@ -1,11 +1,13 @@
 import cv2
 import os
+import pathlib
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import StratifiedKFold
 from keras.engine import Model
 from keras_vggface.vggface import VGGFace
 from keras.layers import Dropout, Flatten, Dense
+from keras.preprocessing.image import load_img, img_to_array
 from glob import glob
 from utils.classifier import Classifier
 from config import config as cfg
@@ -31,7 +33,7 @@ def mean(metric):
 	return metric_sum/len(metric)
 
 
-def loadData(img_folder):
+def loadData(img_folder, expected_shape):
 	images = []
 	for img_path in img_folder:
 		log.info("Loading {0} images".format(img_path))
@@ -42,18 +44,21 @@ def loadData(img_folder):
 		img_absolute_path, img_name = os.path.split(image)
 		path, label 				= os.path.split(img_absolute_path)
 
-		X.append(cv2.imread(image))
-		y.append(cte.LABELS[label])
+		img = cv2.imread(image)
+		if img.shape == expected_shape:
+			X.append(img)
+			y.append(cte.LABELS[label])
+		else:
+			log.error("Image {0} has a shape of {1} not matching the expected shape of {2}".format(img_name, img.shape, expected_shape))
 
-	return X, y
+	return np.array(X), np.array(y)
 
 
-def main():
+def main(expected_shape):
 	casos = cfg.CROPPED + cfg.CASOS + cfg.DSCN_MASK
 	controles = cfg.CROPPED + cfg.CONTROLES + cfg.DSCN_MASK
 
-	X, y = loadData([casos, controles])
-
+	X, y = loadData([casos, controles], expected_shape)
 	classifier = Classifier()
 	params = classifier.getParams()
 
@@ -71,6 +76,8 @@ def main():
 						for train_index, test_index in cv.split(X, y):
 							X_train, y_train 	= X[train_index], y[train_index]
 							X_test, y_test 		= X[test_index], y[test_index]
+
+							X_train, x_test = X_train/255.0, X_test/255.0
 
 							log.info("#{0} - Building Neural Network architecture".format(k))
 							vgg_model = VGGFace(include_top=False, input_shape=(584, 584, 3), pooling='max')
@@ -108,8 +115,7 @@ def main():
 								log.info("#{0} - Something went wrong when computing metrics and loss".format(k))
 
 							k = k + 1
-							break
 
 
 if __name__ == '__main__':
-	main()
+	main((584, 584, 3))

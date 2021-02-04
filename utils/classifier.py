@@ -26,9 +26,9 @@ class Classifier:
 			[
 				Dense(16, activation='relu', name='custom_fc1'),
 				BatchNormalization(),
-				Dense(16, activation='relu', name='custom_fc1'),
+				Dense(16, activation='relu', name='custom_fc2'),
 				BatchNormalization(),
-				Dense(16, activation='relu', name='custom_fc1'),
+				Dense(16, activation='relu', name='custom_fc3'),
 				BatchNormalization(),
 				Dropout(.5, trainable=False, name='custom_dropout_1'),
 			]
