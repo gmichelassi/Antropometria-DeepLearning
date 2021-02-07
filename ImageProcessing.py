@@ -71,8 +71,14 @@ def faceSize(image_folder):
 	}
 
 
-def cropImage(image, x, y, width, height):
-	return image[y:y + height, x:x + width]
+def cropImage(image, x, y, width, height, crop_width, crop_height):
+	x_center = int((2 * x + width)/2)
+	y_center = int((2 * y + height)/2)
+
+	crop_width = int(crop_width/2)
+	crop_height = int(crop_height/2)
+
+	return image[y_center - crop_height:y_center + crop_height, x_center - crop_width:x_center + crop_width]
 
 
 def resizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
@@ -207,7 +213,7 @@ def preprocessImage(img_folder, crop_width, crop_height, show_result=False):
 
 		for (x, y, width, height) in faces:
 			try:
-				# cv2.rectangle(original_image, (x, y), (x + width, y + height), (255, 0, 0), 2)
+				cv2.rectangle(original_image, (x, y), (x + width, y + height), (255, 0, 0), 2)
 
 				# Recortar somente a face
 				found_image = Image.open(image)
@@ -216,15 +222,15 @@ def preprocessImage(img_folder, crop_width, crop_height, show_result=False):
 				face_gray = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
 
 				# roi stands for "region of interest"
-				# roi_gray = gray_img[y:y + height, x: x + width]
-				# roi_colorful = original_image[y:y + height, x: x + width]
+				roi_gray = gray_image[y:y + height, x: x + width]
+				roi_colorful = original_image[y:y + height, x: x + width]
 
 				# Encontrar os olhos
 				log.info('Finding eye for {0}'.format(img_name))
 				eyes = eye_cascade.detectMultiScale(face_gray)
 
 				for (eye_x, eye_y, eye_width, eye_height) in eyes:
-					# cv2.rectangle(roi_colorful, (eye_x, eye_y), (eye_x + eye_width, eye_y + eye_height), (0, 255, 0), 2)
+					cv2.rectangle(roi_colorful, (eye_x, eye_y), (eye_x + eye_width, eye_y + eye_height), (0, 255, 0), 2)
 					eyes_pair = face_gray[eye_y:eye_y + eye_height, eye_x:eye_x + eye_width]
 
 				canny = cv2.Canny(eyes_pair, 50, 245)
@@ -256,11 +262,11 @@ def preprocessImage(img_folder, crop_width, crop_height, show_result=False):
 				image_rotated = cv2.imread(rotated_path)
 
 				log.info('Cropping image around face...')
-				croppedImage = cropImage(image_rotated, x, y, crop_width, crop_height)
+				croppedImage = cropImage(image_rotated, x, y, width, height, crop_width, crop_height)
 
 				if show_result:
 					log.info('Showing result, press something to continue')
-					resized_img = resizeWithAspectRatio(croppedImage, width=250)
+					resized_img = resizeWithAspectRatio(original_image, width=250)
 					cv2.imshow("Result", resized_img)
 					cv2.waitKey(0)
 

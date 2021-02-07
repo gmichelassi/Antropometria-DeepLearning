@@ -21,7 +21,7 @@ class Classifier:
 				Dense(16, activation='relu', name='custom_fc1'),
 				Dropout(.2, trainable=False, name='custom_dropout_2'),
 				Dense(16, activation='relu', name='custom_fc2'),
-				Dense(16, activation='relu', name='custom_fc3')
+				Dense(1, activation='relu', name='custom_fc3')
 			],
 			[
 				Dense(16, activation='relu', name='custom_fc1'),
