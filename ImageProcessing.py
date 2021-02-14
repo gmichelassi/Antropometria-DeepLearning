@@ -6,17 +6,14 @@ import numpy as np
 from decimal import Decimal
 from glob import glob
 from PIL import Image
+
 from config import config as cfg
 from config import logger
 
+from utils.utils import handleError
+from utils.imageProcessing import cropImage, resizeWithAspectRatio, rotateImage, findEyeCoordinates
+
 log = logger.getLogger(__file__)
-
-
-def handleError(msg):
-	log.info(msg)
-	f = open('output/error.txt', 'a')
-	f.write(msg + '\n')
-	f.close()
 
 
 def faceSize(image_folder):
@@ -45,10 +42,6 @@ def faceSize(image_folder):
 
 				FacesSizeX.append(width)
 				FacesSizeY.append(height)
-		# resized_img = ResizeWithAspectRatio(loaded_img, width=500)
-		# cv2.imshow('Image', resized_img)
-		# cv2.waitKey(0)
-		# cv2.destroyAllWindows()
 		else:
 			log.info('More than one face found for image ' + image)
 
@@ -69,119 +62,6 @@ def faceSize(image_folder):
 		'max': (maxFaceSizeX, maxFaceSizeY),
 		'std': (stdFaceSizeX, stdFaceSizeY)
 	}
-
-
-def cropImage(image, x, y, width, height, crop_width, crop_height):
-	x_center = int((2 * x + width)/2)
-	y_center = int((2 * y + height)/2)
-
-	crop_width = int(crop_width/2)
-	crop_height = int(crop_height/2)
-
-	return image[y_center - crop_height:y_center + crop_height, x_center - crop_width:x_center + crop_width]
-
-
-def resizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
-	(h, w) = image.shape[:2]
-
-	if width is None and height is None:
-		return image
-	if width is None:
-		r = height / float(h)
-		dim = (int(w * r), height)
-	else:
-		r = width / float(w)
-		dim = (width, int(h * r))
-
-	return cv2.resize(image, dim, interpolation=inter)
-
-
-def rotateImage(image, angle):
-	"""
-	Rotates an OpenCV 2 / NumPy image about it's centre by the given angle
-	(in degrees). The returned image will be large enough to hold the entire
-	new image, with a black background
-	"""
-
-	# Get the image size
-	# No that's not an error - NumPy stores image matricies backwards
-	image_size = (image.shape[1], image.shape[0])
-	image_center = tuple(np.array(image_size) / 2)
-
-	# Convert the OpenCV 3x2 rotation matrix to 3x3
-	rot_mat = np.vstack(
-		[cv2.getRotationMatrix2D(image_center, angle, 1.0), [0, 0, 1]]
-	)
-
-	rot_mat_notranslate = np.array(rot_mat[0:2, 0:2])
-
-	# Shorthand for below calcs
-	image_w2 = image_size[0] * 0.5
-	image_h2 = image_size[1] * 0.5
-
-	# Obtain the rotated coordinates of the image corners
-	rotated_coords = [
-		(np.array([-image_w2, image_h2]) * rot_mat_notranslate).A[0],
-		(np.array([image_w2, image_h2]) * rot_mat_notranslate).A[0],
-		(np.array([-image_w2, -image_h2]) * rot_mat_notranslate).A[0],
-		(np.array([image_w2, -image_h2]) * rot_mat_notranslate).A[0]
-	]
-
-	# Find the size of the new image
-	x_coords = [pt[0] for pt in rotated_coords]
-	x_pos = [x for x in x_coords if x > 0]
-	x_neg = [x for x in x_coords if x < 0]
-
-	y_coords = [pt[1] for pt in rotated_coords]
-	y_pos = [y for y in y_coords if y > 0]
-	y_neg = [y for y in y_coords if y < 0]
-
-	right_bound = max(x_pos)
-	left_bound = min(x_neg)
-	top_bound = max(y_pos)
-	bot_bound = min(y_neg)
-
-	new_w = int(abs(right_bound - left_bound))
-	new_h = int(abs(top_bound - bot_bound))
-
-	# We require a translation matrix to keep the image centred
-	trans_mat = np.array([
-		[1, 0, int(new_w * 0.5 - image_w2)],
-		[0, 1, int(new_h * 0.5 - image_h2)],
-		[0, 0, 1]
-	])
-
-	# Compute the tranform for the combined rotation and translation
-	affine_mat = (np.array(trans_mat) * np.array(rot_mat))[0:2, :]
-
-	# Apply the transform
-	result = cv2.warpAffine(
-		image,
-		affine_mat,
-		(new_w, new_h),
-		flags=cv2.INTER_LINEAR
-	)
-
-	return result
-
-
-def findEyeCoordinates(img, h, w1, w2):
-	sumX = 0
-	sumY = 0
-	countX = 0
-	countY = 0
-	for i in range(w1, w2):
-		for j in range(0, h):
-			px = img[j, i]
-			ent = px.astype(np.int)
-			if 250 <= ent <= 275:
-				sumX = sumX + i
-				sumY = sumY + j
-				countX = countX + 1
-				countY = countY + 1
-	x = sumX / countX
-	y = sumY / countY
-	return x, y
 
 
 def preprocessImage(img_folder, crop_width, crop_height, show_result=False):
