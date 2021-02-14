@@ -273,10 +273,16 @@ def preprocessImage(img_folder, crop_width, crop_height, show_result=False):
 			croppedImage = cropImage(image_rotated, x, y, width, height, crop_width, crop_height)
 
 			if show_result:
-				log.info('Showing result, press something to continue')
-				resized_img = resizeWithAspectRatio(croppedImage, width=250)
-				cv2.imshow("Result", resized_img)
+				log.info('Showing result...')
+				resized_img = resizeWithAspectRatio(original_image, width=500)
+				cv2.imshow("Original Image", resized_img)
 				cv2.waitKey(3000)
+
+				resized_img = resizeWithAspectRatio(croppedImage, width=500)
+				cv2.imshow("Processed Image", resized_img)
+				cv2.waitKey(3000)
+
+				cv2.destroyAllWindows()
 
 			log.info('Preprocessing done for {0}, saving outputs'.format(img_name))
 			cv2.imwrite(eyes_path, eyes_pair)
