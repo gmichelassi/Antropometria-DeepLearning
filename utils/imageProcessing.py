@@ -104,7 +104,6 @@ def rotateImage(image, angle):
 def findEyeCoordinates(img, h, w1, w2):
 	"""
 	Dado uma imagem, uma altura e as laguras, encontra a coordenada dos olhos.
-	Só Deus sabe como.
 	"""
 	sumX = 0
 	sumY = 0

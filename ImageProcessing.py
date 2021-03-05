@@ -87,7 +87,7 @@ def rescaleAndProcessImage(images):
 				else:
 					scale_factor = scale_factor * 0.9
 		except IOError as ioe:
-			handleError("Its was not possible to load image {0} due to error {1}".format(image, ioe))
+			handleError("Its was not possible to load image {0} due to error {1}".format(image_path, ioe))
 
 
 def defaultProcessing(img_folder):
@@ -100,7 +100,7 @@ def defaultProcessing(img_folder):
 
 	for image_path in images:
 		original_image = cv2.imread(image_path)
-		processImage(image_path=image_path, original_image=original_image, show_result=True)
+		processImage(image_path=image_path, original_image=original_image, show_result=False)
 
 
 def processImage(image_path, original_image, show_result=False):
@@ -139,23 +139,24 @@ def processImage(image_path, original_image, show_result=False):
 		face = np.asarray(detected_face)
 		face_gray = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
 
+		h, w = face_gray.shape
+		h = int(h / 2)
+		crop = face_gray.copy()[0:0 + h, 0:0 + w]
 		# Encontrar os olhos
 		log.info('Finding eye for {0}'.format(img_name))
-		eyes = eye_cascade.detectMultiScale(face_gray)
+		eyes = eye_cascade.detectMultiScale(crop)
 
 		for (eye_x, eye_y, eye_width, eye_height) in eyes:
 			cv2.rectangle(roi_colorful, (eye_x, eye_y), (eye_x + eye_width, eye_y + eye_height), (0, 255, 0), 2)
 			eyes_pair = face_gray[eye_y:eye_y + eye_height, eye_x:eye_x + eye_width]
-			eyes_box = (eye_x, eye_y, eye_x + eye_width, eye_y + eye_height)
 
-		canny = cv2.Canny(eyes_pair, 50, 245)
+		canny = cv2.Canny(face_gray, 50, 245)
 		kernel = np.ones((3, 3), np.uint8)
 		gradient = cv2.morphologyEx(canny, cv2.MORPH_GRADIENT, kernel)
 
 		# find coordinates of the pupils
 		h = gradient.shape[0]
 		w = gradient.shape[1]
-
 		x1, y1 = findEyeCoordinates(gradient, h, 0, int(w / 2))  # left eye
 		x1, y1 = abs(x1), abs(y1)  # normalizar geometricamente
 
@@ -206,6 +207,8 @@ def processImage(image_path, original_image, show_result=False):
 		handleError('It was not possible to preprocesses image {0} because of error {1}'.format(img_name, ioe))
 	except TypeError as te:
 		handleError('It was not possible to preprocesses image {0} because of error {1}'.format(img_name, te))
+	except UnboundLocalError as ule:
+		handleError('Could not save eyes pair for image {0} because of error {1}'.format(img_name, ule))
 
 
 if __name__ == '__main__':
@@ -227,8 +230,11 @@ if __name__ == '__main__':
 	all_images = [casos, controles, a22q11, angelman, apert, cdl, down, fragilex, marfan, progeria, sotos, treacher, turner, williams]
 	casos_controles_images = [casos, controles]
 
-	# defaultProcessing(casos_controles_images)
-	image_path = cfg.IMG_DIR + '/_testImage/MIT-10.jpg'
-	# original_image = cv2.imread(image_path)
-	# processImage(image_path=image_path, original_image=original_image, show_result=True)
-	rescaleAndProcessImage([image_path])
+	isTest = True
+
+	if isTest:
+		image_path = cfg.IMG_DIR + '/_testImage/MIT-10.jpg'
+		original_image = cv2.imread(image_path)
+		processImage(image_path=image_path, original_image=original_image, show_result=True)
+	else:
+		defaultProcessing(casos_controles_images)
