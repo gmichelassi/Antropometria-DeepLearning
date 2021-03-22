@@ -182,20 +182,15 @@ def processImage(image_path, original_image, show_result=False):
 
 		log.info('Cropping image around face...')
 
-		if height > crop_height or width > crop_width:
-			img_height, img_width, channels = image_rotated.shape
+		gray_rotated_image = cv2.cvtColor(image_rotated, cv2.COLOR_BGR2GRAY)
+		rotated_faces = face_cascade.detectMultiScale(gray_rotated_image, 1.3, 5, cv2.CASCADE_SCALE_IMAGE, (20, 20))
+		if len(rotated_faces) == 0:
+			handleError('Houve um erro ao detectar a face na imagem {0} rotacionada.'.format(img_name))
+			return
+		face_x, face_y, face_width, face_height = rotated_faces[0]
 
-			img_ideal_height = int((img_height * crop_height) / height)
-			image_rotated = resizeWithAspectRatio(image_rotated, height=img_ideal_height)
-
-			gray_image = cv2.cvtColor(image_rotated, cv2.COLOR_BGR2GRAY)
-			faces = face_cascade.detectMultiScale(gray_image, 1.3, 5, cv2.CASCADE_SCALE_IMAGE, (20, 20))
-			if len(faces) == 0:
-				handleError('Houve um erro ao detectar a face na imagem rotacionada quando foi redimensionada.')
-
-			x, y, width, height = faces[0]
-
-		croppedImage = cropImage(image_rotated, x, y, width, height, crop_width, crop_height)
+		rotated_face = image_rotated[face_y:face_y + face_height, face_x:face_x + face_width]
+		croppedImage = resizeWithAspectRatio(rotated_face, crop_width, crop_height)
 
 		if show_result:
 			log.info('Showing result...')
