@@ -2,12 +2,12 @@ import numpy as np
 import cv2
 
 
-def cropImage(image, x, y, width, height, crop_width, crop_height):
+def cropImage(image, x, y, face_width, face_height, crop_width, crop_height):
 	"""
 	Dado uma imagem, suas coordenadas iniciais, altura e largura recorta a imagem partindo da coordenada central.
 	"""
-	x_center = int((2 * x + width)/2)
-	y_center = int((2 * y + height)/2)
+	x_center = int((2 * x + face_width)/2)
+	y_center = int((2 * y + face_height)/2)
 
 	crop_width = int(crop_width/2)
 	crop_height = int(crop_height/2)

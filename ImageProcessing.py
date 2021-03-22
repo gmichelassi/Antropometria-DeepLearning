@@ -14,7 +14,8 @@ from utils.utils import handleError
 from utils.imageProcessing import cropImage, resizeWithAspectRatio, rotateImage, findEyeCoordinates
 
 log = logger.getLogger(__file__)
-crop_dimension = (584, 584)
+crop_width = 584
+crop_height = 584
 
 
 def faceSize(image_folder):
@@ -180,7 +181,21 @@ def processImage(image_path, original_image, show_result=False):
 		image_rotated = cv2.imread(rotated_path)
 
 		log.info('Cropping image around face...')
-		croppedImage = cropImage(image_rotated, x, y, width, height, crop_dimension[0], crop_dimension[1])
+
+		if height > crop_height or width > crop_width:
+			img_height, img_width, channels = image_rotated.shape
+
+			img_ideal_height = int((img_height * crop_height) / height)
+			image_rotated = resizeWithAspectRatio(image_rotated, height=img_ideal_height)
+
+			gray_image = cv2.cvtColor(image_rotated, cv2.COLOR_BGR2GRAY)
+			faces = face_cascade.detectMultiScale(gray_image, 1.3, 5, cv2.CASCADE_SCALE_IMAGE, (20, 20))
+			if len(faces) == 0:
+				handleError('Houve um erro ao detectar a face na imagem rotacionada quando foi redimensionada.')
+
+			x, y, width, height = faces[0]
+
+		croppedImage = cropImage(image_rotated, x, y, width, height, crop_width, crop_height)
 
 		if show_result:
 			log.info('Showing result...')
@@ -230,7 +245,7 @@ if __name__ == '__main__':
 	all_images = [casos, controles, a22q11, angelman, apert, cdl, down, fragilex, marfan, progeria, sotos, treacher, turner, williams]
 	casos_controles_images = [casos, controles]
 
-	isTest = True
+	isTest = False
 
 	if isTest:
 		image_path = cfg.IMG_DIR + '/_testImage/MIT-10.jpg'
