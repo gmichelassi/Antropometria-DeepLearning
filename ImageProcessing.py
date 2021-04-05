@@ -147,6 +147,7 @@ def processImage(image_path, original_image, show_result=False):
 		log.info('Finding eye for {0}'.format(img_name))
 		eyes = eye_cascade.detectMultiScale(crop)
 
+		eyes_pair = None
 		for (eye_x, eye_y, eye_width, eye_height) in eyes:
 			cv2.rectangle(roi_colorful, (eye_x, eye_y), (eye_x + eye_width, eye_y + eye_height), (0, 255, 0), 2)
 			eyes_pair = face_gray[eye_y:eye_y + eye_height, eye_x:eye_x + eye_width]
@@ -160,7 +161,6 @@ def processImage(image_path, original_image, show_result=False):
 		w = gradient.shape[1]
 		x1, y1 = findEyeCoordinates(gradient, h, 0, int(w / 2))  # left eye
 		x1, y1 = abs(x1), abs(y1)  # normalizar geometricamente
-
 		x2, y2 = findEyeCoordinates(gradient, h, int(w / 2), w)  # right eye
 		x2, y2 = abs(x2), abs(y2)
 
@@ -185,10 +185,11 @@ def processImage(image_path, original_image, show_result=False):
 		gray_rotated_image = cv2.cvtColor(image_rotated, cv2.COLOR_BGR2GRAY)
 		rotated_faces = face_cascade.detectMultiScale(gray_rotated_image, 1.3, 5, cv2.CASCADE_SCALE_IMAGE, (20, 20))
 		if len(rotated_faces) == 0:
-			handleError('Houve um erro ao detectar a face na imagem {0} rotacionada.'.format(img_name))
-			return
-		face_x, face_y, face_width, face_height = rotated_faces[0]
-
+			log.warning('Houve um erro ao detectar a face na imagem {0} rotacionada. Tentando novamente com menos parâmetros.'.format(img_name))
+			rotated_faces2 = face_cascade.detectMultiScale(gray_rotated_image)
+			face_x, face_y, face_width, face_height = rotated_faces2[0]
+		else:
+			face_x, face_y, face_width, face_height = rotated_faces[0]
 		rotated_face = image_rotated[face_y:face_y + face_height, face_x:face_x + face_width]
 		croppedImage = resizeWithAspectRatio(rotated_face, crop_width, crop_height)
 
@@ -205,7 +206,11 @@ def processImage(image_path, original_image, show_result=False):
 			cv2.destroyAllWindows()
 
 		log.info('Preprocessing done for {0}, saving outputs'.format(img_name))
-		cv2.imwrite(eyes_path, eyes_pair)
+		if eyes_pair is not None:
+			cv2.imwrite(eyes_path, eyes_pair)
+		else:
+			log.warning('Could not save eyes pair for image {0}.')
+
 		cv2.imwrite(gradient_path, gradient)
 		cv2.imwrite(cropped_path, croppedImage)
 
@@ -217,8 +222,6 @@ def processImage(image_path, original_image, show_result=False):
 		handleError('It was not possible to preprocesses image {0} because of error {1}'.format(img_name, ioe))
 	except TypeError as te:
 		handleError('It was not possible to preprocesses image {0} because of error {1}'.format(img_name, te))
-	except UnboundLocalError as ule:
-		handleError('Could not save eyes pair for image {0} because of error {1}'.format(img_name, ule))
 
 
 if __name__ == '__main__':
@@ -240,11 +243,30 @@ if __name__ == '__main__':
 	all_images = [casos, controles, a22q11, angelman, apert, cdl, down, fragilex, marfan, progeria, sotos, treacher, turner, williams]
 	casos_controles_images = [casos, controles]
 
-	isTest = False
+	isTest = True
 
 	if isTest:
-		image_path = cfg.IMG_DIR + '/_testImage/MIT-10.jpg'
-		original_image = cv2.imread(image_path)
-		processImage(image_path=image_path, original_image=original_image, show_result=True)
+		# image_path = cfg.IMG_DIR + '/_testImage/MIT-10.jpg'
+		# original_image = cv2.imread(image_path)
+		# processImage(image_path=image_path, original_image=original_image, show_result=True)
+		erro_eyes_pair = [
+			cfg.IMG_DIR + cfg.CASOS + '/DSCN3469.JPG',
+		]
+
+		erro_detectar_faces = [
+			cfg.IMG_DIR + cfg.CONTROLES + '/DSCN4200.JPG',
+			cfg.IMG_DIR + cfg.CONTROLES + '/DSCN4102.JPG'
+		]
+
+		erro_zero_division = [
+			cfg.IMG_DIR + cfg.CASOS + '/DSCN3683.JPG',
+			cfg.IMG_DIR + cfg.CASOS + '/DSCN3603.JPG',
+			cfg.IMG_DIR + cfg.CASOS + '/DSCN3421.JPG',
+			cfg.IMG_DIR + cfg.CONTROLES + '/DSCN3865.JPG',
+			cfg.IMG_DIR + cfg.CONTROLES + '/DSCN3911.JPG']
+
+		for img in erro_zero_division:
+			original_image = cv2.imread(img)
+			processImage(image_path=img, original_image=original_image, show_result=False)
 	else:
 		defaultProcessing(casos_controles_images)
