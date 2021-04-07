@@ -2,6 +2,7 @@ import cv2
 import math
 import cmath
 import os
+import sys
 import numpy as np
 from decimal import Decimal
 from glob import glob
@@ -243,30 +244,22 @@ if __name__ == '__main__':
 	all_images = [casos, controles, a22q11, angelman, apert, cdl, down, fragilex, marfan, progeria, sotos, treacher, turner, williams]
 	casos_controles_images = [casos, controles]
 
-	isTest = False
+	args = sys.argv
+
+	if len(args) > 1:
+		isTest = True if args[1].lower() == 'true' or args[1] == 1 else False
+	else:
+		isTest = False
 
 	if isTest:
-		# image_path = cfg.IMG_DIR + '/_testImage/MIT-10.jpg'
-		# original_image = cv2.imread(image_path)
-		# processImage(image_path=image_path, original_image=original_image, show_result=True)
-		erro_eyes_pair = [
-			cfg.IMG_DIR + cfg.CASOS + '/DSCN3469.JPG',
-		]
-
-		erro_detectar_faces = [
-			cfg.IMG_DIR + cfg.CONTROLES + '/DSCN4200.JPG',
-			cfg.IMG_DIR + cfg.CONTROLES + '/DSCN4102.JPG'
-		]
-
-		erro_zero_division = [
-			cfg.IMG_DIR + cfg.CASOS + '/DSCN3683.JPG',
-			cfg.IMG_DIR + cfg.CASOS + '/DSCN3603.JPG',
-			cfg.IMG_DIR + cfg.CASOS + '/DSCN3421.JPG',
-			cfg.IMG_DIR + cfg.CONTROLES + '/DSCN3865.JPG',
-			cfg.IMG_DIR + cfg.CONTROLES + '/DSCN3911.JPG']
-
-		for img in erro_zero_division:
-			original_image = cv2.imread(img)
-			processImage(image_path=img, original_image=original_image, show_result=False)
+		image_path = cfg.IMG_DIR + '/_testImage/MIT-10.jpg'
+		original_image = cv2.imread(image_path)
+		processImage(image_path=image_path, original_image=original_image, show_result=True)
 	else:
-		defaultProcessing(casos_controles_images)
+		if len(args) > 3:
+			paths = []
+			for path in args[2:]:
+				paths.append(path)
+			defaultProcessing(paths)
+		else:
+			defaultProcessing(casos_controles_images)
