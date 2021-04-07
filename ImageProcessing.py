@@ -152,7 +152,7 @@ def processImage(image_path, original_image, show_result=False):
 			cv2.rectangle(roi_colorful, (eye_x, eye_y), (eye_x + eye_width, eye_y + eye_height), (0, 255, 0), 2)
 			eyes_pair = face_gray[eye_y:eye_y + eye_height, eye_x:eye_x + eye_width]
 
-		canny = cv2.Canny(face_gray, 50, 245)
+		canny = cv2.Canny(face_gray, 50, 100)
 		kernel = np.ones((3, 3), np.uint8)
 		gradient = cv2.morphologyEx(canny, cv2.MORPH_GRADIENT, kernel)
 
@@ -243,7 +243,7 @@ if __name__ == '__main__':
 	all_images = [casos, controles, a22q11, angelman, apert, cdl, down, fragilex, marfan, progeria, sotos, treacher, turner, williams]
 	casos_controles_images = [casos, controles]
 
-	isTest = True
+	isTest = False
 
 	if isTest:
 		# image_path = cfg.IMG_DIR + '/_testImage/MIT-10.jpg'
