@@ -1,6 +1,7 @@
 import cv2
 import os
 import pathlib
+import sys
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import StratifiedKFold
@@ -15,6 +16,7 @@ from config import constants as cte
 from config import logger
 
 log = logger.getLogger(__file__)
+default_shape = (584, 584, 3)
 
 
 def buildNNArchiteture(layers, last_layer):
@@ -118,4 +120,10 @@ def main(expected_shape):
 
 
 if __name__ == '__main__':
-	main((584, 584, 3))
+	args = sys.argv
+
+	if len(args) == 4:
+		shape = (int(args[1]), int(args[2]), int(args[3]))
+		main(shape)
+	else:
+		main(default_shape)
