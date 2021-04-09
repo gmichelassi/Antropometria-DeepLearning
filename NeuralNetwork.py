@@ -69,31 +69,31 @@ def main(expected_shape):
 			for losses in params['losses']:
 				for metrics in params['metrics']:
 					for optimizer in params['optimizers']:
-
 						k = 0
 						n_splits = 10
 						cv = StratifiedKFold(n_splits=n_splits)
 						log.info("Running cross validation k={0}".format(n_splits))
 
+						log.info("Building Neural Network architecture")
+						vgg_model = VGGFace(include_top=False, input_shape=(584, 584, 3), pooling='max')
+						last_layer = vgg_model.get_layer('pool5').output
+
+						out = buildNNArchiteture(layers, last_layer)
+
+						custom_vgg_model = Model(vgg_model.input, out)
+
+						log.info("Compiling built model...")
+						custom_vgg_model.compile(optimizer=optimizer, loss=losses, metrics=metrics)
+
+						loss, accuracy = [], []
+						log.info("Running cross validation")
 						for train_index, test_index in cv.split(X, y):
 							X_train, y_train 	= X[train_index], y[train_index]
 							X_test, y_test 		= X[test_index], y[test_index]
 
 							X_train, x_test = X_train/255.0, X_test/255.0
 
-							log.info("#{0} - Building Neural Network architecture".format(k))
-							vgg_model = VGGFace(include_top=False, input_shape=(584, 584, 3), pooling='max')
-							last_layer = vgg_model.get_layer('pool5').output
-
-							out = buildNNArchiteture(layers, last_layer)
-
-							custom_vgg_model = Model(vgg_model.input, out)
-
-							loss, accuracy = [], []
 							try:
-								log.info("#{0} - Compiling built model...".format(k))
-								custom_vgg_model.compile(optimizer=optimizer, loss=losses, metrics=metrics)
-
 								log.info("#{0} - Training model...".format(k))
 								custom_vgg_model.fit(X_train, y_train, epochs=epochs)
 
@@ -107,16 +107,16 @@ def main(expected_shape):
 							except RuntimeError as re:
 								log.info('[RuntimeError] Could not perform train and test beacause of error {0}'.format(re))
 
-							if len(loss) == n_splits and len(accuracy) == n_splits:
-								mean_accuracy = mean(accuracy)
-								mean_loss = mean(loss)
-
-								log.info("#{0} - Mean accuracy achieved: {1}".format(k, mean_accuracy))
-								log.info("#{0} - Mean loss: {1}".format(k, mean_loss))
-							else:
-								log.info("#{0} - Something went wrong when computing metrics and loss".format(k))
-
 							k = k + 1
+
+						if len(loss) == n_splits and len(accuracy) == n_splits:
+							mean_accuracy = mean(accuracy)
+							mean_loss = mean(loss)
+
+							log.info("#{0} - Mean accuracy achieved: {1}".format(k, mean_accuracy))
+							log.info("#{0} - Mean loss: {1}".format(k, mean_loss))
+						else:
+							log.info("#{0} - Something went wrong when computing metrics and loss".format(k))
 
 
 if __name__ == '__main__':
