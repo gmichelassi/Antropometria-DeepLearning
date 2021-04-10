@@ -140,7 +140,7 @@ def main(expected_shape):
 								'optimizer': optimizer,
 								'loss': losses,
 								'epochs': epochs,
-								'layers': final_layers,
+								'layers': layer_ref,
 								'mean_accuracy': mean_accuracy,
 								'mean_loss': mean_loss,
 								'mean_precision': mean_precision,
