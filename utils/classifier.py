@@ -28,26 +28,7 @@ class Classifier:
 		self.losses = ['binary_crossentropy']
 		self.metrics = [Accuracy(), Precision(), Recall(), AUC()]
 		self.epochs = [10, 100, 1000]
-
-		self.layers = [
-			[
-				Dropout(.2, trainable=False, name='custom_dropout1'),
-				Flatten(name='flatten'),
-				Dense(16, activation='relu', name='custom_fc1'),
-				Dropout(.5, trainable=False, name='custom_dropout_2'),
-				Dense(8, activation='relu', name='custom_fc2'),
-				Dense(1, activation='relu', name='custom_fc3')
-			],
-			[
-				Dense(32, activation='relu', name='custom_fc1'),
-				BatchNormalization(),
-				Dense(16, activation='relu', name='custom_fc2'),
-				BatchNormalization(),
-				Dense(16, activation='relu', name='custom_fc3'),
-				BatchNormalization(),
-				Dropout(.5, trainable=False, name='custom_dropout_1'),
-			]
-		]
+		self.layers = ['ZhangFacilRecognitionArchiteture', 'SinghRareDiseasesArchiteture',]
 
 	def getParams(self):
 		return {
@@ -57,3 +38,24 @@ class Classifier:
 			'epochs': 		self.epochs,
 			'layers':		self.layers
 		}
+
+	def buildArchiteture(self, architeture_ref, last_layer):
+		if architeture_ref == self.layers[0]:
+			x = Dropout(.2, trainable=False, name='custom_dropout1')(last_layer)
+			x = Flatten(name='flatten')(x)
+			x = Dense(16, activation='relu', name='custom_fc1')(x)
+			x = Dropout(.5, trainable=False, name='custom_dropout_2')(x)
+			x = Dense(8, activation='relu', name='custom_fc2')(x)
+			out = Dense(1, activation='relu', name='custom_fc3')(x)
+			return out
+		elif architeture_ref == self.layers[1]:
+			x = Dense(32, activation='relu', name='custom_fc1')(last_layer)
+			x = BatchNormalization()(x)
+			x = Dense(16, activation='relu', name='custom_fc2')(x)
+			x = BatchNormalization()(x)
+			x = Dense(16, activation='relu', name='custom_fc3')(x)
+			x = BatchNormalization()(x)
+			out = Dropout(.5, trainable=False, name='custom_dropout_1')(x)
+			return out
+		else:
+			return None
