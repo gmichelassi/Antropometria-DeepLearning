@@ -28,7 +28,7 @@ class Classifier:
 		self.losses = ['binary_crossentropy']
 		self.metrics = [Accuracy(), Precision(), Recall(), AUC()]
 		self.epochs = [10, 25]
-		self.layers = ['ZhangFacilRecognitionArchiteture', 'SinghRareDiseasesArchiteture',]
+		self.layers = ['ZhangFacilRecognitionArchiteture', 'SinghRareDiseasesArchiteture', ]
 
 	def getParams(self):
 		return {

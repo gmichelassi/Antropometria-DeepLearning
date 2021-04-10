@@ -86,6 +86,11 @@ def main(expected_shape):
 					last_layer = vgg_model.get_layer('pool5').output
 
 					final_layers = classifier.buildArchiteture(layer_ref, last_layer)
+
+					if final_layers is None:
+						log.error("#{0}/{1} - Erro ao computar arquitetura da rede neural".format(current_test, num_of_tests))
+						continue
+
 					custom_vgg_model = Model(vgg_model.input, final_layers)
 
 					log.info("#{0}/{1} - Compiling built model...".format(current_test, num_of_tests))
