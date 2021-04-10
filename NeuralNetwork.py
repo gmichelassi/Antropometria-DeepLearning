@@ -69,7 +69,7 @@ def main(expected_shape):
 		writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 		writer.writeheader()
 
-	num_of_tests = len(paramsparams['layers']) * len(params['epochs']) * len(params['losses']) * len(params['optimizers'])
+	num_of_tests = len(params['layers']) * len(params['epochs']) * len(params['losses']) * len(params['optimizers'])
 	current_test = 1
 	for layer_ref in params['layers']:
 		for epochs in params['epochs']:
