@@ -118,7 +118,7 @@ def main(expected_shape):
 							accuracy.append(results[1])
 							precision.append(results[2])
 							recall.append(results[3])
-							auc.append(results[4])
+							# auc.append(results[4])
 
 						except ValueError as ve:
 							log.info('[ValueError] Could not perform train and test beacause of error {0}'.format(ve))
@@ -132,7 +132,7 @@ def main(expected_shape):
 						mean_accuracy = mean(accuracy)
 						mean_precision = mean(precision)
 						mean_recall = mean(recall)
-						mean_AUC = mean(auc)
+						mean_AUC = 'not used'
 
 						log.info("#{0}/{1} - Mean accuracy achieved: {2}".format(current_test, num_of_tests, mean_accuracy))
 						log.info("#{0}/{1} - Mean loss: {2}".format(current_test, num_of_tests, mean_loss))
