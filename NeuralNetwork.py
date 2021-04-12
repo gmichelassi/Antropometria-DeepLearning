@@ -19,7 +19,7 @@ from config import logger
 
 log = logger.getLogger(__file__)
 default_shape = (584, 584, 3)
-fieldnames = ['image_processing', 'classifier', 'optimizer', 'loss', 'epochs', 'layers', 'mean_accuracy', 'mean_precision', 'mean_recall', 'mean_AUC', 'execution_time']
+fieldnames = ['image_processing', 'classifier', 'optimizer', 'optmizer_params', 'loss', 'epochs', 'layers', 'mean_accuracy', 'mean_precision', 'mean_recall', 'mean_AUC', 'execution_time']
 classifier_name = 'Neural Network'
 image_processing = 'dlibHOG'
 
@@ -94,13 +94,16 @@ def main(expected_shape):
 					custom_vgg_model = Model(vgg_model.input, final_layers)
 
 					log.info("#{0}/{1} - Compiling built model...".format(current_test, num_of_tests))
-					custom_vgg_model.compile(optimizer=optimizer, loss=losses, metrics=metrics)
+					custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=metrics)
 
 					loss, accuracy, precision, recall, auc = [], [], [], [], []
 					log.info("#{0}/{1} - Running cross validation".format(current_test, num_of_tests))
 					for train_index, test_index in cv.split(X, y):
 						X_train, y_train = X[train_index], y[train_index]
 						X_test, y_test = X[test_index], y[test_index]
+
+						log.debug(f'Test shapes: X={X_test.shape}, y={y_test.shape}')
+						log.debug(f'Train shapes: X={X_train.shape}, y={y_train.shape}')
 
 						X_train, x_test = X_train/255.0, X_test/255.0
 
@@ -109,7 +112,7 @@ def main(expected_shape):
 							custom_vgg_model.fit(X_train, y_train, epochs=epochs)
 
 							log.info("k={0} - Evaluating model...".format(k))
-							results = custom_vgg_model.evaluate(X_test, y_test, verbose=2, return_dict=True)
+							results = custom_vgg_model.evaluate(X_test, y_test, verbose=0, return_dict=True)
 
 							loss.append(results['loss'])
 							accuracy.append(results['accuracy'])
@@ -142,7 +145,8 @@ def main(expected_shape):
 							row = {
 								'image_processing': image_processing,
 								'classifier': classifier_name,
-								'optimizer': optimizer,
+								'optimizer': optimizer['optimizer'].name,
+								'optimizer_params': optimizer['params'],
 								'loss': losses,
 								'epochs': epochs,
 								'layers': layer_ref,
