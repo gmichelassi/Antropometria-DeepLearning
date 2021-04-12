@@ -26,7 +26,7 @@ class Classifier:
 			{'optimizer': Adam(learning_rate=10), 					'params': 'lr=10'}
 		]
 		self.losses = ['binary_crossentropy']
-		self.metrics = [Accuracy(), Precision(), Recall(), AUC()]
+		self.metrics = [Accuracy(), Precision(), Recall(), ]  # AUC()
 		self.epochs = [10, 25]
 		self.layers = ['ZhangFacilRecognitionArchiteture', 'SinghRareDiseasesArchiteture', ]
 
