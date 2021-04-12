@@ -112,13 +112,13 @@ def main(expected_shape):
 							custom_vgg_model.fit(X_train, y_train, epochs=epochs)
 
 							log.info("k={0} - Evaluating model...".format(k))
-							results = custom_vgg_model.evaluate(X_test, y_test, verbose=0, return_dict=True)
+							results = custom_vgg_model.evaluate(X_test, y_test, verbose=2)
 
-							loss.append(results['loss'])
-							accuracy.append(results['accuracy'])
-							precision.append(results['precision'])
-							recall.append(results['recall'])
-							auc.append(results['auc'])
+							loss.append(results[0])
+							accuracy.append(results[1])
+							precision.append(results[2])
+							recall.append(results[3])
+							auc.append(results[4])
 
 						except ValueError as ve:
 							log.info('[ValueError] Could not perform train and test beacause of error {0}'.format(ve))
