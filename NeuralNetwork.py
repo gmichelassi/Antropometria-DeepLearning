@@ -94,7 +94,7 @@ def main(expected_shape):
 					custom_vgg_model = Model(vgg_model.input, final_layers)
 
 					log.info("#{0}/{1} - Compiling built model...".format(current_test, num_of_tests))
-					custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=[tf.keras.metrics.Accuracy(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall(), tf.keras.metrics.AUC()])
+					custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=['accuracy', 'precision', 'recall', 'auc'])
 
 					loss, accuracy, precision, recall, auc = [], [], [], [], []
 					log.info("#{0}/{1} - Running cross validation".format(current_test, num_of_tests))
