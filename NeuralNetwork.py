@@ -94,7 +94,7 @@ def main(expected_shape):
 					custom_vgg_model = Model(vgg_model.input, final_layers)
 
 					log.info("#{0}/{1} - Compiling built model...".format(current_test, num_of_tests))
-					custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=metrics)
+					custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=[tf.keras.metrics.Accuracy(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall(), tf.keras.metrics.AUC()])
 
 					loss, accuracy, precision, recall, auc = [], [], [], [], []
 					log.info("#{0}/{1} - Running cross validation".format(current_test, num_of_tests))
@@ -118,7 +118,7 @@ def main(expected_shape):
 							accuracy.append(results[1])
 							precision.append(results[2])
 							recall.append(results[3])
-							# auc.append(results[4])
+							auc.append(results[4])
 
 						except ValueError as ve:
 							log.info('[ValueError] Could not perform train and test beacause of error {0}'.format(ve))
@@ -132,7 +132,7 @@ def main(expected_shape):
 						mean_accuracy = mean(accuracy)
 						mean_precision = mean(precision)
 						mean_recall = mean(recall)
-						mean_AUC = 'not used'
+						mean_AUC = mean(auc)
 
 						log.info("#{0}/{1} - Mean accuracy achieved: {2}".format(current_test, num_of_tests, mean_accuracy))
 						log.info("#{0}/{1} - Mean loss: {2}".format(current_test, num_of_tests, mean_loss))
