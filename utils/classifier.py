@@ -32,7 +32,6 @@ class Classifier:
 		return {
 			'optimizers': 	self.optimizers,
 			'losses': 		self.losses,
-			'metrics':		self.metrics,
 			'epochs': 		self.epochs,
 			'layers':		self.layers
 		}
