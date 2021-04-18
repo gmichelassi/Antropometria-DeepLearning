@@ -9,7 +9,7 @@ import tensorflow as tf
 from sklearn.model_selection import StratifiedKFold
 from keras.engine import Model
 from keras_vggface.vggface import VGGFace
-from keras.layers import Dropout, Flatten, Dense
+from tensorflow.keras.metrics import Accuracy, Precision, Recall, AUC
 from keras.preprocessing.image import load_img, img_to_array
 from glob import glob
 from utils.classifier import Classifier
@@ -62,7 +62,6 @@ def main(expected_shape):
 
 	classifier = Classifier()
 	params = classifier.getParams()
-	metrics = params['metrics']
 
 	log.info('Preparing output file - writing header')
 	with open('./output/test_results.csv', 'w') as csvfile:
@@ -94,7 +93,7 @@ def main(expected_shape):
 					custom_vgg_model = Model(vgg_model.input, final_layers)
 
 					log.info("#{0}/{1} - Compiling built model...".format(current_test, num_of_tests))
-					custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=[tf.keras.metrics.Accuracy(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall(), tf.keras.metrics.AUC()])
+					custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=[Accuracy(), Precision(), Recall(), AUC()])
 
 					loss, accuracy, precision, recall, auc = [], [], [], [], []
 					log.info("#{0}/{1} - Running cross validation".format(current_test, num_of_tests))
@@ -112,7 +111,7 @@ def main(expected_shape):
 							custom_vgg_model.fit(X_train, y_train, epochs=epochs)
 
 							log.info("k={0} - Evaluating model...".format(k))
-							results = custom_vgg_model.evaluate(X_test, y_test, verbose=2)
+							results = custom_vgg_model.evaluate(X_test, y_test, verbose=0)
 
 							loss.append(results[0])
 							accuracy.append(results[1])
