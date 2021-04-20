@@ -19,7 +19,7 @@ from config import logger
 
 log = logger.getLogger(__file__)
 default_shape = (584, 584, 3)
-fieldnames = ['image_processing', 'classifier', 'optmizer_params', 'loss', 'epochs', 'layers', 'mean_accuracy', 'mean_precision', 'mean_recall', 'mean_AUC', 'execution_time']
+fieldnames = ['image_processing', 'classifier', 'optimizer_params', 'loss', 'epochs', 'layers', 'mean_accuracy', 'mean_loss', 'mean_precision', 'mean_recall', 'mean_AUC', 'execution_time']
 classifier_name = 'Neural Network'
 image_processing = 'dlibHOG'
 
