@@ -1,0 +1,23 @@
+image_processing,classifier,optimizer_params,loss,epochs,layers,mean_accuracy,mean_loss,mean_precision,mean_recall,mean_AUC,execution_time
+dlibHOG,Neural Network,"name=SGD, lr=0.001, m=0.0",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,330.0164904117584
+dlibHOG,Neural Network,"name=SGD, lr=0.01, m=0.0",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,324.2359250982602
+dlibHOG,Neural Network,"name=SGD, lr=0.1, m=0.0",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.3970989942551
+dlibHOG,Neural Network,"name=SGD, lr=1, m=0.0",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.1810212771098
+dlibHOG,Neural Network,"name=SGD, lr=10, m=0.0",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.26694462696713
+dlibHOG,Neural Network,"name=SGD, lr=0.001, m=0.1",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.1879593173663
+dlibHOG,Neural Network,"name=SGD, lr=0.01, m=0.1",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.3268076737722
+dlibHOG,Neural Network,"name=SGD, lr=0.1, m=0.1",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.1620404044787
+dlibHOG,Neural Network,"name=SGD, lr=1, m=0.1",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.10199451843897
+dlibHOG,Neural Network,"name=SGD, lr=10, m=0.1",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.6023427605629
+dlibHOG,Neural Network,"name=Adam, lr=0.0001",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.8328788836797
+dlibHOG,Neural Network,"name=Adam, lr=0.001",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.5034831206004
+dlibHOG,Neural Network,"name=Adam, lr=0.01",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.87123248974484
+dlibHOG,Neural Network,"name=Adam, lr=0.1",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.72708597183225
+dlibHOG,Neural Network,"name=Adam, lr=0.5",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.43625107606255
+dlibHOG,Neural Network,"name=Adam, lr=1",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.6147093653679
+dlibHOG,Neural Network,"name=Adam, lr=10",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.4245759963989
+dlibHOG,Neural Network,"name=SGD, lr=0.001, m=0.0",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,802.0372010787328
+dlibHOG,Neural Network,"name=SGD, lr=0.01, m=0.0",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,802.2460830807686
+dlibHOG,Neural Network,"name=SGD, lr=0.1, m=0.0",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,801.7847435394923
+dlibHOG,Neural Network,"name=SGD, lr=1, m=0.0",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,802.2864567399025
+dlibHOG,Neural Network,"name=SGD, lr=10, m=0.0",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,872.0829467614492
