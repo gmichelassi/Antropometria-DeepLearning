@@ -67,7 +67,7 @@ class Classifier:
 			out = Dense(1, activation='relu', name='custom_fc1')(last_layer)
 			return out
 		elif architeture_ref == 'oneDenseFullyConnectedSigmoid':
-			out = Dense(1, activation='softmax', name='custom_fc1')(last_layer)
+			out = Dense(1, activation='sigmoid', name='custom_fc1')(last_layer)
 			return out
 		else:
 			return None
