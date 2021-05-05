@@ -11,7 +11,6 @@ from sklearn.model_selection import StratifiedKFold
 from keras.engine import Model
 from keras_vggface.vggface import VGGFace
 from tensorflow.keras.metrics import Accuracy, Precision, Recall, AUC
-from keras.preprocessing.image import load_img, img_to_array
 from glob import glob
 from utils.classifier import Classifier
 from config import config as cfg
@@ -68,10 +67,10 @@ def test_current_fold(X, y, custom_vgg_model, train_index, test_index, epochs, k
 
 	try:
 		log.info("k={0} - Training model...".format(k))
-		custom_vgg_model.fit(X_train, y_train, epochs=epochs)
+		custom_vgg_model.fit(X_train, y_train, batch_size=12, epochs=epochs)
 
 		log.info("k={0} - Evaluating model...".format(k))
-		results = custom_vgg_model.evaluate(X_test, y_test, verbose=0)
+		results = custom_vgg_model.evaluate(X_test, y_test, batch_size=12, verbose=0)
 
 		return results
 	except ValueError as ve:
@@ -161,7 +160,7 @@ def main(expected_shape):
 					start_time = time.time()
 
 					log.info("#{0}/{1} - Building Neural Network architecture".format(current_test, num_of_tests))
-					vgg_model = VGGFace(include_top=False, input_shape=(584, 584, 3), pooling='max')
+					vgg_model = VGGFace(include_top=False, input_shape=expected_shape, pooling='max')
 					last_layer = vgg_model.get_layer('pool5').output
 
 					final_layers = classifier.buildArchiteture(layer_ref, last_layer)
@@ -179,7 +178,6 @@ def main(expected_shape):
 						accuracy, auc, loss, precision, recall = default_cross_validation(X, y, custom_vgg_model, epochs, current_test, num_of_tests)
 					elif crossval_type == 'PRP2020':
 						accuracy, auc, loss, precision, recall = PRP2020_cross_validation(X, y, img_names, custom_vgg_model, epochs, current_test, num_of_tests)
-						return
 					else:
 						raise ValueError(f'Variable crossvaltype with option "{crossval_type}" is not valid')
 
