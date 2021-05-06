@@ -163,7 +163,7 @@ def main(expected_shape):
 					vgg_model = VGGFace(include_top=False, input_shape=expected_shape, pooling='max')
 					last_layer = vgg_model.get_layer('pool5').output
 
-					final_layers = classifier.buildArchiteture(layer_ref, last_layer)
+					final_layers = classifier.buildArchiteture(architeture_ref=layer_ref, last_layer=last_layer)
 
 					if final_layers is None:
 						log.error("#{0}/{1} - Erro ao computar arquitetura da rede neural".format(current_test, num_of_tests))

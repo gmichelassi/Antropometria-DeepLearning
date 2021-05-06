@@ -45,7 +45,7 @@ class Classifier:
 		}
 
 	@staticmethod
-	def buildArchiteture(self, architeture_ref, last_layer):
+	def buildArchiteture(architeture_ref, last_layer):
 		if architeture_ref == 'ZhangFacilRecognitionArchiteture':
 			x = Dropout(.2, trainable=False, name='custom_dropout1')(last_layer)
 			x = Flatten(name='flatten')(x)

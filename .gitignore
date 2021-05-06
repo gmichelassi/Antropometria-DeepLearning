@@ -131,8 +131,10 @@ dmypy.json
 .idea/
 img/*
 output/*
+output/test_results.csv
 
 !img/.gitkeep
 !img/cross_val_folds_PRP.json
 !output/.gitkeep
+nohup.out
 
