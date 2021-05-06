@@ -21,3 +21,15 @@ dlibHOG,Neural Network,"name=SGD, lr=0.01, m=0.0",binary_crossentropy,25,ZhangFa
 dlibHOG,Neural Network,"name=SGD, lr=0.1, m=0.0",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,801.7847435394923
 dlibHOG,Neural Network,"name=SGD, lr=1, m=0.0",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,802.2864567399025
 dlibHOG,Neural Network,"name=SGD, lr=10, m=0.0",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,872.0829467614492
+dlibHOG,Neural Network,"name=SGD, lr=0.001, m=0.1",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,865.8898273706436
+dlibHOG,Neural Network,"name=SGD, lr=0.01, m=0.1",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,973.3686012347539
+dlibHOG,Neural Network,"name=SGD, lr=0.1, m=0.1",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,973.0606994231542
+dlibHOG,Neural Network,"name=SGD, lr=1, m=0.1",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,915.8524244586627
+dlibHOG,Neural Network,"name=SGD, lr=10, m=0.1",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,1055.0876898050308
+dlibHOG,Neural Network,"name=Adam, lr=0.0001",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,1048.8927729010582
+dlibHOG,Neural Network,"name=Adam, lr=0.001",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,801.0437984824181
+dlibHOG,Neural Network,"name=Adam, lr=0.01",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,800.7706292112669
+dlibHOG,Neural Network,"name=Adam, lr=0.1",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,801.1296584765116
+dlibHOG,Neural Network,"name=Adam, lr=0.5",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,865.8224711179734
+dlibHOG,Neural Network,"name=Adam, lr=1",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,874.4571617086729
+dlibHOG,Neural Network,"name=Adam, lr=10",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,919.567865828673
