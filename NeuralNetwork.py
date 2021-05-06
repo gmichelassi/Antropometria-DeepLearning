@@ -67,10 +67,10 @@ def test_current_fold(X, y, custom_vgg_model, train_index, test_index, epochs, k
 
 	try:
 		log.info("k={0} - Training model...".format(k))
-		custom_vgg_model.fit(X_train, y_train, batch_size=12, epochs=epochs)
+		custom_vgg_model.fit(X_train, y_train, epochs=epochs)
 
 		log.info("k={0} - Evaluating model...".format(k))
-		results = custom_vgg_model.evaluate(X_test, y_test, batch_size=12, verbose=0)
+		results = custom_vgg_model.evaluate(X_test, y_test, verbose=0)
 
 		return results
 	except ValueError as ve:
