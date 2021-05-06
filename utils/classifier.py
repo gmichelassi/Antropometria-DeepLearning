@@ -64,10 +64,12 @@ class Classifier:
 			out = Dropout(.5, trainable=False, name='custom_dropout_1')(x)
 			return out
 		elif architeture_ref == 'oneDenseFullyConnectedRelu':
-			out = Dense(1, activation='relu', name='custom_fc1')(last_layer)
+			x = Flatten(name='flatten')(last_layer)
+			out = Dense(1, activation='relu', name='custom_fc1')(x)
 			return out
 		elif architeture_ref == 'oneDenseFullyConnectedSigmoid':
-			out = Dense(1, activation='sigmoid', name='custom_fc1')(last_layer)
+			x = Flatten(name='flatten')(last_layer)
+			out = Dense(1, activation='sigmoid', name='custom_fc1')(x)
 			return out
 		else:
 			return None
