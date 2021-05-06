@@ -133,5 +133,6 @@ img/*
 output/*
 
 !img/.gitkeep
+!img/cross_val_folds_PRP.json
 !output/.gitkeep
 

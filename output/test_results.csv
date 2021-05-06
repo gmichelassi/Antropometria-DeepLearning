@@ -1,4 +1,5 @@
 image_processing,classifier,optimizer_params,loss,epochs,layers,mean_accuracy,mean_loss,mean_precision,mean_recall,mean_AUC,execution_time
+<<<<<<< HEAD
 dlibHOG,Neural Network,"name=SGD, lr=0.001, m=0.0",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,330.0164904117584
 dlibHOG,Neural Network,"name=SGD, lr=0.01, m=0.0",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,324.2359250982602
 dlibHOG,Neural Network,"name=SGD, lr=0.1, m=0.0",binary_crossentropy,10,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,321.3970989942551
@@ -33,3 +34,5 @@ dlibHOG,Neural Network,"name=Adam, lr=0.1",binary_crossentropy,25,ZhangFacilReco
 dlibHOG,Neural Network,"name=Adam, lr=0.5",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,865.8224711179734
 dlibHOG,Neural Network,"name=Adam, lr=1",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,874.4571617086729
 dlibHOG,Neural Network,"name=Adam, lr=10",binary_crossentropy,25,ZhangFacilRecognitionArchiteture,0.37636364698410035,9.509979343414306,0.37636364698410035,1.0,0.5,919.567865828673
+=======
+>>>>>>> 3aec2f1ea23b3e5377ec3d7e42482372ba9cbe20
