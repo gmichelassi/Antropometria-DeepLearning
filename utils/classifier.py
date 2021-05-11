@@ -32,8 +32,7 @@ class Classifier:
 		self.layers = [
 			# 'ZhangFacilRecognitionArchiteture',
 			# 'SinghRareDiseasesArchiteture',
-			'oneDenseFullyConnectedRelu',
-			'oneDenseFullyConnectedSigmoid'
+			'oneDenseFullyConnectedSoftmax'
 		]
 
 	def getParams(self):
@@ -63,13 +62,9 @@ class Classifier:
 			x = BatchNormalization()(x)
 			out = Dropout(.5, trainable=False, name='custom_dropout_1')(x)
 			return out
-		elif architeture_ref == 'oneDenseFullyConnectedRelu':
+		elif architeture_ref == 'oneDenseFullyConnectedSoftmax':
 			x = Flatten(name='flatten')(last_layer)
-			out = Dense(1, activation='relu', name='custom_fc1')(x)
-			return out
-		elif architeture_ref == 'oneDenseFullyConnectedSigmoid':
-			x = Flatten(name='flatten')(last_layer)
-			out = Dense(1, activation='sigmoid', name='custom_fc1')(x)
+			out = Dense(1, activation='softmax', name='custom_fc1')(x)
 			return out
 		else:
 			return None
