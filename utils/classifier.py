@@ -6,16 +6,16 @@ from keras.layers import Dropout, Flatten, Dense, BatchNormalization
 class Classifier:
 	def __init__(self):
 		self.optimizers = [
-			{'optimizer': SGD(learning_rate=0.00001, momentum=0.0), 'params': 'name=SGD, lr=0.00001, m=0.0'},
-			{'optimizer': SGD(learning_rate=0.001, 	momentum=0.0), 	'params': 'name=SGD, lr=0.001, m=0.0'},
+			{'optimizer': SGD(learning_rate=0.00001, momentum=0.9), 'params': 'name=SGD, lr=0.00001, m=0.0'},
+			{'optimizer': SGD(learning_rate=0.001, 	momentum=0.9), 	'params': 'name=SGD, lr=0.001, m=0.0'},
 			# {'optimizer': SGD(learning_rate=0.01, 	momentum=0.0), 	'params': 'name=SGD, lr=0.01, m=0.0'},
-			{'optimizer': SGD(learning_rate=0.1, 	momentum=0.0), 	'params': 'name=SGD, lr=0.1, m=0.0'},
+			{'optimizer': SGD(learning_rate=0.1, 	momentum=0.9), 	'params': 'name=SGD, lr=0.1, m=0.0'},
 			# {'optimizer': SGD(learning_rate=1, 		momentum=0.0), 	'params': 'name=SGD, lr=1, m=0.0'},
 			# {'optimizer': SGD(learning_rate=10, 	momentum=0.0), 	'params': 'name=SGD, lr=10, m=0.0'},
-			{'optimizer': SGD(learning_rate=0.00001, momentum=0.1), 'params': 'name=SGD, lr=0.001, m=0.1'},
-			{'optimizer': SGD(learning_rate=0.001, 	momentum=0.1), 	'params': 'name=SGD, lr=0.001, m=0.1'},
+			# {'optimizer': SGD(learning_rate=0.00001, momentum=0.1), 'params': 'name=SGD, lr=0.001, m=0.1'},
+			# {'optimizer': SGD(learning_rate=0.001, 	momentum=0.1), 	'params': 'name=SGD, lr=0.001, m=0.1'},
 			# {'optimizer': SGD(learning_rate=0.01, 	momentum=0.1), 	'params': 'name=SGD, lr=0.01, m=0.1'},
-			{'optimizer': SGD(learning_rate=0.1, 	momentum=0.1), 	'params': 'name=SGD, lr=0.1, m=0.1'},
+			# {'optimizer': SGD(learning_rate=0.1, 	momentum=0.1), 	'params': 'name=SGD, lr=0.1, m=0.1'},
 			# {'optimizer': SGD(learning_rate=1, 		momentum=0.1), 	'params': 'name=SGD, lr=1, m=0.1'},
 			# {'optimizer': SGD(learning_rate=10, 	momentum=0.1), 	'params': 'name=SGD, lr=10, m=0.1'},
 			# {'optimizer': Adam(learning_rate=0.0001), 				'params': 'name=Adam, lr=0.0001'},
@@ -28,7 +28,7 @@ class Classifier:
 			# {'optimizer': Adam(learning_rate=10), 					'params': 'name=Adam, lr=10'}
 		]
 		self.losses = ['binary_crossentropy']
-		self.epochs = [10, 25]
+		self.epochs = [10]  # , 25
 		self.layers = [
 			# 'ZhangFacilRecognitionArchiteture',
 			# 'SinghRareDiseasesArchiteture',
