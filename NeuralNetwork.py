@@ -66,7 +66,7 @@ def test_current_fold(X, y, train_index, test_index, epochs, k):
 
 	try:
 		log.info("k={0} - Building Neural Network architecture".format(k))
-		vgg_model = VGGFace(include_top=False, input_shape=expected_shape, pooling='max')
+		vgg_model = VGGFace(include_top=False, input_shape=default_shape, pooling='max')
 		last_layer = vgg_model.get_layer('pool5').output
 
 		final_layers = classifier.buildArchiteture(architeture_ref=layer_ref, last_layer=last_layer)
