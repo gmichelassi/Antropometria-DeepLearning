@@ -56,7 +56,7 @@ def loadData(img_folder, expected_shape):
 	return np.array(X) / 255.0, np.array(y), image_name
 
 
-def test_current_fold(X, y, train_index, test_index, classifier, layer_ref, optimizer, losses, epochs, k):
+def test_current_fold(X, y, train_index, test_index, custom_vgg_model, epochs, k):
 	X_train, y_train = X[train_index], y[train_index]
 	X_test, y_test = X[test_index], y[test_index]
 
@@ -64,21 +64,6 @@ def test_current_fold(X, y, train_index, test_index, classifier, layer_ref, opti
 	log.debug(f'Train shapes: X={X_train.shape}, y={y_train.shape}')
 
 	try:
-		log.info("k={0} - Building Neural Network architecture".format(k))
-		vgg_model = VGGFace(include_top=False, input_shape=default_shape, pooling='max')
-		last_layer = vgg_model.get_layer('pool5').output
-
-		final_layers = classifier.buildArchiteture(architeture_ref=layer_ref, last_layer=last_layer)
-
-		if final_layers is None:
-			log.error("k={0} - Erro ao computar arquitetura da rede neural".format(k))
-			raise ValueError
-
-		custom_vgg_model = Model(vgg_model.input, final_layers)
-
-		log.info("k={0} - Compiling built model...".format(k))
-		custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=[Accuracy(), Precision(), Recall(), AUC()])
-
 		log.info("k={0} - Training model...".format(k))
 		custom_vgg_model.fit(X_train, y_train, epochs=epochs)
 
@@ -94,13 +79,13 @@ def test_current_fold(X, y, train_index, test_index, classifier, layer_ref, opti
 		return None
 
 
-def default_cross_validation(X, y, classifier, layer_ref, optimizer, losses, epochs, current_test, num_of_tests):
+def default_cross_validation(X, y, custom_vgg_face, epochs, current_test, num_of_tests):
 	loss, accuracy, precision, recall, auc = [], [], [], [], []
 	k = 0
 	cv = StratifiedKFold(n_splits=n_splits)
 	log.info("#{0}/{1} - Running cross validation k={2}".format(current_test, num_of_tests, n_splits))
 	for train_index, test_index in cv.split(X, y):
-		results = test_current_fold(X, y, train_index, test_index, classifier, layer_ref, optimizer, losses, epochs, k)
+		results = test_current_fold(X, y, train_index, test_index, custom_vgg_face, epochs, k)
 
 		loss.append(results[0])
 		accuracy.append(results[1])
@@ -113,7 +98,7 @@ def default_cross_validation(X, y, classifier, layer_ref, optimizer, losses, epo
 	return accuracy, auc, loss, precision, recall
 
 
-def PRP2020_cross_validation(X, y, img_names, classifier, layer_ref, optimizer, losses, epochs, current_test, num_of_tests):
+def PRP2020_cross_validation(X, y, img_names, custom_vgg_face, epochs, current_test, num_of_tests):
 	loss, accuracy, precision, recall, auc = [], [], [], [], []
 	k = 0
 	img_names = [x.lower() for x in img_names]
@@ -136,7 +121,7 @@ def PRP2020_cross_validation(X, y, img_names, classifier, layer_ref, optimizer, 
 				if lower_img_name in img_names:
 					train_index.append(img_names.index(lower_img_name))
 
-			results = test_current_fold(X, y, train_index, test_index, classifier, layer_ref, optimizer, losses, epochs, k)
+			results = test_current_fold(X, y, train_index, test_index, custom_vgg_face, epochs, k)
 
 			loss.append(results[0])
 			accuracy.append(results[1])
@@ -172,10 +157,28 @@ def main(expected_shape):
 				for optimizer in params['optimizers']:
 					start_time = time.time()
 
+					log.info("Building Neural Network architecture")
+					vgg_model = VGGFace(include_top=False, weights='vggface', input_shape=default_shape, pooling=None)
+
+					for layer in vgg_model.layers[:15]:
+						layer.trainable = False
+
+					last_layer = vgg_model.get_layer('pool5').output
+
+					final_layers = classifier.buildArchiteture(architeture_ref=layer_ref, last_layer=last_layer)
+
+					if final_layers is None:
+						log.error("Erro ao computar arquitetura da rede neural")
+
+					custom_vgg_model = Model(vgg_model.input, final_layers)
+
+					log.info("Compiling built model...")
+					custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=[Accuracy(), Precision(), Recall(), AUC()])
+
 					if crossval_type == 'default':
-						accuracy, auc, loss, precision, recall = default_cross_validation(X, y, classifier, layer_ref, optimizer, losses, epochs, current_test, num_of_tests)
+						accuracy, auc, loss, precision, recall = default_cross_validation(X, y, custom_vgg_model, epochs, current_test, num_of_tests)
 					elif crossval_type == 'PRP2020':
-						accuracy, auc, loss, precision, recall = PRP2020_cross_validation(X, y, img_names, classifier, layer_ref, optimizer, losses, epochs, current_test, num_of_tests)
+						accuracy, auc, loss, precision, recall = PRP2020_cross_validation(X, y, img_names, custom_vgg_model, epochs, current_test, num_of_tests)
 					else:
 						raise ValueError(f'Variable crossvaltype with option "{crossval_type}" is not valid')
 
@@ -225,4 +228,8 @@ if __name__ == '__main__':
 		shape = (int(args[1]), int(args[2]), int(args[3]))
 		main(shape)
 	else:
+		# casos = cfg.CROPPED + cfg.CASOS + cfg.DSCN_MASK
+		# controles = cfg.CROPPED + cfg.CONTROLES + cfg.DSCN_MASK
+		#
+		# X, y, img_names = loadData([casos, controles], expected_shape)
 		main(default_shape)
