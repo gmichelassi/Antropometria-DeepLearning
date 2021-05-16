@@ -21,7 +21,8 @@ log = logger.getLogger(__file__)
 default_shape = (584, 584, 3)
 crossval_type = 'PRP2020'  # Other option is 'default'
 n_splits = 10
-fieldnames = ['image_processing', 'classifier', 'optimizer_params', 'loss', 'epochs', 'layers', 'mean_accuracy', 'mean_loss', 'mean_precision', 'mean_recall', 'mean_AUC', 'execution_time']
+fieldnames = ['image_processing', 'classifier', 'optimizer_params', 'loss', 'epochs', 'layers', 'mean_accuracy',
+			  'mean_loss', 'mean_precision', 'mean_recall', 'mean_AUC', 'execution_time']
 classifier_name = 'Neural Network'
 image_processing = 'dlibHOG'
 
@@ -31,7 +32,7 @@ def mean(metric):
 	for i in metric:
 		metric_sum = metric_sum + i
 
-	return metric_sum/len(metric)
+	return metric_sum / len(metric)
 
 
 def loadData(img_folder, expected_shape):
@@ -43,7 +44,7 @@ def loadData(img_folder, expected_shape):
 	X, y, image_name = [], [], []
 	for image in images:
 		img_absolute_path, img_name = os.path.split(image)
-		path, label 				= os.path.split(img_absolute_path)
+		path, label = os.path.split(img_absolute_path)
 
 		img = cv2.imread(image)
 		if img.shape == expected_shape:
@@ -53,19 +54,32 @@ def loadData(img_folder, expected_shape):
 		else:
 			log.error("Image {0} has a shape of {1} not matching the expected shape of {2}".format(img_name, img.shape, expected_shape))
 
-	return np.array(X), np.array(y), image_name
+	return np.array(X) / 255.0, np.array(y), image_name
 
 
-def test_current_fold(X, y, custom_vgg_model, train_index, test_index, epochs, k):
+def test_current_fold(X, y, train_index, test_index, epochs, k):
 	X_train, y_train = X[train_index], y[train_index]
 	X_test, y_test = X[test_index], y[test_index]
 
 	log.debug(f'Test shapes: X={X_test.shape}, y={y_test.shape}')
 	log.debug(f'Train shapes: X={X_train.shape}, y={y_train.shape}')
 
-	X_train, x_test = X_train / 255.0, X_test / 255.0
-
 	try:
+		log.info("k={0} - Building Neural Network architecture".format(k))
+		vgg_model = VGGFace(include_top=False, input_shape=expected_shape, pooling='max')
+		last_layer = vgg_model.get_layer('pool5').output
+
+		final_layers = classifier.buildArchiteture(architeture_ref=layer_ref, last_layer=last_layer)
+
+		if final_layers is None:
+			log.error("k={0} - Erro ao computar arquitetura da rede neural".format(k))
+			raise ValueError
+
+		custom_vgg_model = Model(vgg_model.input, final_layers)
+
+		log.info("k={0} - Compiling built model...".format(k))
+		custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=[Accuracy(), Precision(), Recall(), AUC()])
+
 		log.info("k={0} - Training model...".format(k))
 		custom_vgg_model.fit(X_train, y_train, epochs=epochs)
 
@@ -158,21 +172,6 @@ def main(expected_shape):
 			for losses in params['losses']:
 				for optimizer in params['optimizers']:
 					start_time = time.time()
-
-					log.info("#{0}/{1} - Building Neural Network architecture".format(current_test, num_of_tests))
-					vgg_model = VGGFace(include_top=False, input_shape=expected_shape, pooling='max')
-					last_layer = vgg_model.get_layer('pool5').output
-
-					final_layers = classifier.buildArchiteture(architeture_ref=layer_ref, last_layer=last_layer)
-
-					if final_layers is None:
-						log.error("#{0}/{1} - Erro ao computar arquitetura da rede neural".format(current_test, num_of_tests))
-						continue
-
-					custom_vgg_model = Model(vgg_model.input, final_layers)
-
-					log.info("#{0}/{1} - Compiling built model...".format(current_test, num_of_tests))
-					custom_vgg_model.compile(optimizer=optimizer['optimizer'], loss=losses, metrics=[Accuracy(), Precision(), Recall(), AUC()])
 
 					if crossval_type == 'default':
 						accuracy, auc, loss, precision, recall = default_cross_validation(X, y, custom_vgg_model, epochs, current_test, num_of_tests)
