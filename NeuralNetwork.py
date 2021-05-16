@@ -57,7 +57,7 @@ def loadData(img_folder, expected_shape):
 	return np.array(X) / 255.0, np.array(y), image_name
 
 
-def test_current_fold(X, y, train_index, test_index, epochs, k):
+def test_current_fold(X, y, train_index, test_index, classifier, epochs, k):
 	X_train, y_train = X[train_index], y[train_index]
 	X_test, y_test = X[test_index], y[test_index]
 
@@ -95,13 +95,13 @@ def test_current_fold(X, y, train_index, test_index, epochs, k):
 		return None
 
 
-def default_cross_validation(X, y, epochs, current_test, num_of_tests):
+def default_cross_validation(X, y, classifier, epochs, current_test, num_of_tests):
 	loss, accuracy, precision, recall, auc = [], [], [], [], []
 	k = 0
 	cv = StratifiedKFold(n_splits=n_splits)
 	log.info("#{0}/{1} - Running cross validation k={2}".format(current_test, num_of_tests, n_splits))
 	for train_index, test_index in cv.split(X, y):
-		results = test_current_fold(X, y, train_index, test_index, epochs, k)
+		results = test_current_fold(X, y, train_index, test_index, classifier, epochs, k)
 
 		loss.append(results[0])
 		accuracy.append(results[1])
@@ -114,7 +114,7 @@ def default_cross_validation(X, y, epochs, current_test, num_of_tests):
 	return accuracy, auc, loss, precision, recall
 
 
-def PRP2020_cross_validation(X, y, img_names, epochs, current_test, num_of_tests):
+def PRP2020_cross_validation(X, y, img_names, classifier, epochs, current_test, num_of_tests):
 	loss, accuracy, precision, recall, auc = [], [], [], [], []
 	k = 0
 	img_names = [x.lower() for x in img_names]
@@ -137,7 +137,7 @@ def PRP2020_cross_validation(X, y, img_names, epochs, current_test, num_of_tests
 				if lower_img_name in img_names:
 					train_index.append(img_names.index(lower_img_name))
 
-			results = test_current_fold(X, y, train_index, test_index, epochs, k)
+			results = test_current_fold(X, y, train_index, test_index, classifier, epochs, k)
 
 			loss.append(results[0])
 			accuracy.append(results[1])
@@ -174,9 +174,9 @@ def main(expected_shape):
 					start_time = time.time()
 
 					if crossval_type == 'default':
-						accuracy, auc, loss, precision, recall = default_cross_validation(X, y, epochs, current_test, num_of_tests)
+						accuracy, auc, loss, precision, recall = default_cross_validation(X, y, classifier, epochs, current_test, num_of_tests)
 					elif crossval_type == 'PRP2020':
-						accuracy, auc, loss, precision, recall = PRP2020_cross_validation(X, y, img_names, epochs, current_test, num_of_tests)
+						accuracy, auc, loss, precision, recall = PRP2020_cross_validation(X, y, img_names, classifier, epochs, current_test, num_of_tests)
 					else:
 						raise ValueError(f'Variable crossvaltype with option "{crossval_type}" is not valid')
 
