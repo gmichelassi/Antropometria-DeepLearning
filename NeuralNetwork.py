@@ -95,7 +95,7 @@ def test_current_fold(X, y, train_index, test_index, epochs, k):
 		return None
 
 
-def default_cross_validation(X, y, custom_vgg_model, epochs, current_test, num_of_tests):
+def default_cross_validation(X, y, epochs, current_test, num_of_tests):
 	loss, accuracy, precision, recall, auc = [], [], [], [], []
 	k = 0
 	cv = StratifiedKFold(n_splits=n_splits)
@@ -114,7 +114,7 @@ def default_cross_validation(X, y, custom_vgg_model, epochs, current_test, num_o
 	return accuracy, auc, loss, precision, recall
 
 
-def PRP2020_cross_validation(X, y, img_names, custom_vgg_model, epochs, current_test, num_of_tests):
+def PRP2020_cross_validation(X, y, img_names, epochs, current_test, num_of_tests):
 	loss, accuracy, precision, recall, auc = [], [], [], [], []
 	k = 0
 	img_names = [x.lower() for x in img_names]
@@ -174,9 +174,9 @@ def main(expected_shape):
 					start_time = time.time()
 
 					if crossval_type == 'default':
-						accuracy, auc, loss, precision, recall = default_cross_validation(X, y, custom_vgg_model, epochs, current_test, num_of_tests)
+						accuracy, auc, loss, precision, recall = default_cross_validation(X, y, epochs, current_test, num_of_tests)
 					elif crossval_type == 'PRP2020':
-						accuracy, auc, loss, precision, recall = PRP2020_cross_validation(X, y, img_names, custom_vgg_model, epochs, current_test, num_of_tests)
+						accuracy, auc, loss, precision, recall = PRP2020_cross_validation(X, y, img_names, epochs, current_test, num_of_tests)
 					else:
 						raise ValueError(f'Variable crossvaltype with option "{crossval_type}" is not valid')
 
