@@ -231,8 +231,8 @@ if __name__ == '__main__':
 		shape = (int(args[1]), int(args[2]), int(args[3]))
 		main(shape)
 	else:
-		casos = cfg.CROPPED + cfg.CASOS + cfg.DSCN_MASK
-		controles = cfg.CROPPED + cfg.CONTROLES + cfg.DSCN_MASK
-
-		X, y, img_names = loadData([casos, controles], default_shape)
-		# main(default_shape)
+		# casos = cfg.CROPPED + cfg.CASOS + cfg.DSCN_MASK
+		# controles = cfg.CROPPED + cfg.CONTROLES + cfg.DSCN_MASK
+		#
+		# X, y, img_names = loadData([casos, controles], default_shape)
+		main(default_shape)
