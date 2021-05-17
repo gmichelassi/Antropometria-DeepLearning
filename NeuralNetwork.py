@@ -53,6 +53,9 @@ def loadData(img_folder, expected_shape):
 		else:
 			log.error("Image {0} has a shape of {1} not matching the expected shape of {2}".format(img_name, img.shape, expected_shape))
 
+	print(X[0])
+	print(image_name[0])
+
 	return np.array(X) / 255.0, np.array(y), image_name
 
 
@@ -228,8 +231,8 @@ if __name__ == '__main__':
 		shape = (int(args[1]), int(args[2]), int(args[3]))
 		main(shape)
 	else:
-		# casos = cfg.CROPPED + cfg.CASOS + cfg.DSCN_MASK
-		# controles = cfg.CROPPED + cfg.CONTROLES + cfg.DSCN_MASK
-		#
-		# X, y, img_names = loadData([casos, controles], expected_shape)
-		main(default_shape)
+		casos = cfg.CROPPED + cfg.CASOS + cfg.DSCN_MASK
+		controles = cfg.CROPPED + cfg.CONTROLES + cfg.DSCN_MASK
+
+		X, y, img_names = loadData([casos, controles], expected_shape)
+		# main(default_shape)
