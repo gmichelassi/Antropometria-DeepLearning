@@ -6,10 +6,10 @@ from keras.layers import Dropout, Flatten, Dense, BatchNormalization
 class Classifier:
 	def __init__(self):
 		self.optimizers = [
-			{'optimizer': SGD(learning_rate=0.00001, momentum=0.9), 'params': 'name=SGD, lr=0.00001, m=0.0'},
-			{'optimizer': SGD(learning_rate=0.001, 	momentum=0.9), 	'params': 'name=SGD, lr=0.001, m=0.0'},
+			{'optimizer': SGD(learning_rate=0.00001, momentum=0.0), 'params': 'name=SGD, lr=0.00001, m=0.0'},
+			{'optimizer': SGD(learning_rate=0.001, 	momentum=0.0), 	'params': 'name=SGD, lr=0.001, m=0.0'},
 			# {'optimizer': SGD(learning_rate=0.01, 	momentum=0.0), 	'params': 'name=SGD, lr=0.01, m=0.0'},
-			{'optimizer': SGD(learning_rate=0.1, 	momentum=0.9), 	'params': 'name=SGD, lr=0.1, m=0.0'},
+			{'optimizer': SGD(learning_rate=0.1, 	momentum=0.0), 	'params': 'name=SGD, lr=0.1, m=0.0'},
 			# {'optimizer': SGD(learning_rate=1, 		momentum=0.0), 	'params': 'name=SGD, lr=1, m=0.0'},
 			# {'optimizer': SGD(learning_rate=10, 	momentum=0.0), 	'params': 'name=SGD, lr=10, m=0.0'},
 			# {'optimizer': SGD(learning_rate=0.00001, momentum=0.1), 'params': 'name=SGD, lr=0.001, m=0.1'},
@@ -32,7 +32,7 @@ class Classifier:
 		self.layers = [
 			# 'ZhangFacilRecognitionArchiteture',
 			# 'SinghRareDiseasesArchiteture',
-			'oneDenseFullyConnectedSoftmax'
+			'oneDenseFullyConnectedSigmoid'
 		]
 
 	def getParams(self):
@@ -62,9 +62,9 @@ class Classifier:
 			x = BatchNormalization()(x)
 			out = Dropout(.5, trainable=False, name='custom_dropout_1')(x)
 			return out
-		elif architeture_ref == 'oneDenseFullyConnectedSoftmax':
+		elif architeture_ref == 'oneDenseFullyConnectedSigmoid':
 			x = Flatten(name='flatten')(last_layer)
-			out = Dense(1, activation='softmax', name='custom_fc1')(x)
+			out = Dense(1, activation='sigmoid', name='custom_fc1')(x)
 			return out
 		else:
 			return None
