@@ -234,5 +234,5 @@ if __name__ == '__main__':
 		casos = cfg.CROPPED + cfg.CASOS + cfg.DSCN_MASK
 		controles = cfg.CROPPED + cfg.CONTROLES + cfg.DSCN_MASK
 
-		X, y, img_names = loadData([casos, controles], expected_shape)
+		X, y, img_names = loadData([casos, controles], default_shape)
 		# main(default_shape)
