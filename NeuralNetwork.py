@@ -53,9 +53,6 @@ def loadData(img_folder, expected_shape):
 		else:
 			log.error("Image {0} has a shape of {1} not matching the expected shape of {2}".format(img_name, img.shape, expected_shape))
 
-	print(X[0])
-	print(image_name[0])
-
 	return np.array(X), np.array(y), image_name
 
 
@@ -138,10 +135,7 @@ def PRP2020_cross_validation(X, y, img_names, custom_vgg_face, epochs, current_t
 
 
 def main(expected_shape):
-	casos = cfg.CROPPED + cfg.CASOS + cfg.DSCN_MASK
-	controles = cfg.CROPPED + cfg.CONTROLES + cfg.DSCN_MASK
 
-	X, y, img_names = loadData([casos, controles], expected_shape)
 	log.info(f'Data has {y.shape} instaces with shape {X.shape}')
 
 	classifier = Classifier()

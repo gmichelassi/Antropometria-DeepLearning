@@ -8,11 +8,11 @@ from decimal import Decimal
 from glob import glob
 from PIL import Image
 
-from config import config as cfg
+from config import constants as cte
 from config import logger
 
 from utils.utils import handleError
-from utils.imageProcessing import cropImage, resizeWithAspectRatio, rotateImage, findEyeCoordinates
+from utils.image_processing_utils import cropImage, resizeWithAspectRatio, rotateImage, findEyeCoordinates
 
 log = logger.getLogger(__file__)
 crop_width = 584
@@ -113,10 +113,10 @@ def processImage(image_path, original_image, show_result=False):
 	img_absolute_path, img_name = os.path.split(image_path)
 	path, label = os.path.split(img_absolute_path)
 
-	eyes_path = cfg.EYES + '/' + label + '/' + img_name
-	gradient_path = cfg.GRADIENT + '/' + label + '/' + img_name
-	rotated_path = cfg.ROTATED + '/' + label + '/' + img_name
-	cropped_path = cfg.CROPPED + '/' + label + '/' + img_name
+	eyes_path = cte.EYES + '/' + label + '/' + img_name
+	gradient_path = cte.GRADIENT + '/' + label + '/' + img_name
+	rotated_path = cte.ROTATED + '/' + label + '/' + img_name
+	cropped_path = cte.CROPPED + '/' + label + '/' + img_name
 
 	try:
 		gray_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
@@ -226,20 +226,20 @@ def processImage(image_path, original_image, show_result=False):
 
 
 if __name__ == '__main__':
-	casos = cfg.IMG_DIR + cfg.CASOS + cfg.DSCN_MASK
-	controles = cfg.IMG_DIR + cfg.CONTROLES + cfg.DSCN_MASK
-	a22q11 = cfg.IMG_DIR + cfg.a22q11 + cfg.IMAGE_MASK
-	angelman = cfg.IMG_DIR + cfg.ANGELMAN + cfg.IMAGE_MASK
-	apert = cfg.IMG_DIR + cfg.APERT + cfg.IMAGE_MASK
-	cdl = cfg.IMG_DIR + cfg.CDL + cfg.IMAGE_MASK
-	down = cfg.IMG_DIR + cfg.DOWN + cfg.IMAGE_MASK
-	fragilex = cfg.IMG_DIR + cfg.FRAGILEX + cfg.IMAGE_MASK
-	marfan = cfg.IMG_DIR + cfg.MARFAN + cfg.IMAGE_MASK
-	progeria = cfg.IMG_DIR + cfg.PROGERIA + cfg.IMAGE_MASK
-	sotos = cfg.IMG_DIR + cfg.SOTOS + cfg.IMAGE_MASK
-	treacher = cfg.IMG_DIR + cfg.TREACHER + cfg.IMAGE_MASK
-	turner = cfg.IMG_DIR + cfg.TURNER + cfg.IMAGE_MASK
-	williams = cfg.IMG_DIR + cfg.WILLIAMS + cfg.IMAGE_MASK
+	casos = cte.IMG_DIR + cte.CASOS + cte.DSCN_MASK
+	controles = cte.IMG_DIR + cte.CONTROLES + cte.DSCN_MASK
+	a22q11 = cte.IMG_DIR + cte.a22q11 + cte.IMAGE_MASK
+	angelman = cte.IMG_DIR + cte.ANGELMAN + cte.IMAGE_MASK
+	apert = cte.IMG_DIR + cte.APERT + cte.IMAGE_MASK
+	cdl = cte.IMG_DIR + cte.CDL + cte.IMAGE_MASK
+	down = cte.IMG_DIR + cte.DOWN + cte.IMAGE_MASK
+	fragilex = cte.IMG_DIR + cte.FRAGILEX + cte.IMAGE_MASK
+	marfan = cte.IMG_DIR + cte.MARFAN + cte.IMAGE_MASK
+	progeria = cte.IMG_DIR + cte.PROGERIA + cte.IMAGE_MASK
+	sotos = cte.IMG_DIR + cte.SOTOS + cte.IMAGE_MASK
+	treacher = cte.IMG_DIR + cte.TREACHER + cte.IMAGE_MASK
+	turner = cte.IMG_DIR + cte.TURNER + cte.IMAGE_MASK
+	williams = cte.IMG_DIR + cte.WILLIAMS + cte.IMAGE_MASK
 
 	all_images = [casos, controles, a22q11, angelman, apert, cdl, down, fragilex, marfan, progeria, sotos, treacher, turner, williams]
 	casos_controles_images = [casos, controles]
@@ -252,7 +252,7 @@ if __name__ == '__main__':
 		isTest = False
 
 	if isTest:
-		image_path = cfg.IMG_DIR + '/_testImage/MIT-10.jpg'
+		image_path = cte.IMG_DIR + '/_testImage/MIT-10.jpg'
 		original_image = cv2.imread(image_path)
 		processImage(image_path=image_path, original_image=original_image, show_result=True)
 	else:
