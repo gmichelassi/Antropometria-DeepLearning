@@ -1,13 +1,14 @@
 import logging
 import os
-from config import config as cf
+
+ROOT_DIR = os.path.abspath(os.getcwd())
 
 
 def getLogger(loggerForFile):
     logger = logging.getLogger(os.path.basename(loggerForFile))
     if not logger.handlers:
         logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                            datefmt='%d/%m/%Y %I:%M:%S %p', filename=cf.ROOT_DIR + "/output/processing.log",
+                            datefmt='%d/%m/%Y %I:%M:%S %p', filename=ROOT_DIR + "/output/processing.log",
                             filemode='w', level=logging.DEBUG)
         console = logging.StreamHandler()
         console.setLevel(logging.DEBUG)
