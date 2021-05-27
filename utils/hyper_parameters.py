@@ -43,8 +43,7 @@ def get_layers(architeture, last_layers):
 		out = Dropout(.5, trainable=False, name='custom_dropout_1')(x)
 		return out
 	elif architeture == 'oneDenseFullyConnectedSigmoid':
-		x = Flatten(name='flatten')(last_layers)
-		out = Dense(1, activation='sigmoid', name='custom_fc1')(x)
+		out = Dense(1, activation='sigmoid', name='custom_fc1')(last_layers)
 		return out
 	else:
 		raise ValueError('It was not possible to find {0} architeture'.format(architeture))

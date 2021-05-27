@@ -106,7 +106,7 @@ def test_current_fold(X, y, train_index, test_index, custom_vgg_face, epochs):
 	X_test, y_test = X[test_index], y[test_index]
 
 	custom_vgg_face.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs)
-	results = custom_vgg_model.evaluate()
+	results = custom_vgg_face.evaluate()
 
 	return results
 
@@ -123,7 +123,7 @@ def run_neural_network(X, y, image_names):
 	loss_functions = get_loss_function()
 	architetures = get_layers_ref()
 	current_test = 0
-	num_of_tests = len(optimizers) + len(epochs) + len(loss_functions) + len(layers)
+	num_of_tests = len(optimizers) + len(epochs) + len(loss_functions) + len(architetures)
 
 	for architeture in architetures:
 		for epoch in epochs:
@@ -142,7 +142,8 @@ def run_neural_network(X, y, image_names):
 					transfer_model = Model(inputs=vgg_model.input, outputs=custom_model)
 
 					log.info(f"{current_test}/{num_of_tests} - Compiling model")
-					transfer_model.compile(loss=loss_function, optimizer=optimizer['opt'],
+					transfer_model.compile(loss=loss_function,
+										   optimizer=optimizer['opt'],
 										   metrics=[Accuracy(), Precision(), Recall(), AUC()])
 
 					log.info(f"{current_test}/{num_of_tests} - Running {CROSS_VAL_TYPE} cross validation")
@@ -154,7 +155,7 @@ def run_neural_network(X, y, image_names):
 						log.error("Não foi detectado qual validação cruzada deve ser executada")
 						return
 
-					if CONDITION:
+					if True:
 						log.info(f"{current_test}/{num_of_tests} - Calculating results")
 						mean_loss = calculate_mean(loss)
 						mean_accuracy = calculate_mean(accuracy)
@@ -166,7 +167,7 @@ def run_neural_network(X, y, image_names):
 
 						log.info(f"{current_test}/{num_of_tests} - Saving results")
 						with open('./output/test_results.csv', 'a') as csvfile:
-							writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+							writer = csv.DictWriter(csvfile, fieldnames=FIELDNAMES)
 							row = {
 								'image_processing': IMAGE_PROCESSING,
 								'classifier': CLASSIFIER,
@@ -182,9 +183,6 @@ def run_neural_network(X, y, image_names):
 								'execution_time': execution_time
 							}
 							writer.writerow(row)
-					else:
-						log.error(f"{current_test}/{num_of_tests} - Não foi possível calcular corretamente as métricas")
-						return
 
 					current_test = current_test + 1
 
