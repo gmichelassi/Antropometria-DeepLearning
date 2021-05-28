@@ -1,7 +1,7 @@
 import logging
 import os
 
-from constants import ROOT_DIR
+from config.constants import ROOT_DIR
 
 
 def getLogger(logger_for_file):

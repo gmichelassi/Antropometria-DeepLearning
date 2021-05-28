@@ -41,6 +41,7 @@ def processImages(all_images, show_result=False):
 			log.info("Found {0} faces!".format(len(faces)))
 
 			if len(faces) == 0:
+				log.error(f'Found more than one face for {img_name}')
 				return
 
 			x, y, width, height = faces[0]
@@ -141,6 +142,6 @@ if __name__ == '__main__':
 
 	all_images = []
 	for path in images_paths:
-		all_images.append(glob(path))
+		all_images += glob(path)
 
 	processImages(all_images)

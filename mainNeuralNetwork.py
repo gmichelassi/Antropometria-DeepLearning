@@ -106,4 +106,5 @@ if __name__ == '__main__':
 	images_paths = [cte.CASOS, cte.CONTROLES]
 
 	x, y, image_names = load_data(images_paths)
+	print(len(y))
 	run_neural_network(x, y, image_names)
