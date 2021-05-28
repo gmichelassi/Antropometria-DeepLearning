@@ -1,11 +1,8 @@
-import numpy as np
 import cv2
+import numpy as np
 
 
 def cropImage(image, x, y, face_width, face_height, crop_width, crop_height):
-	"""
-	Dado uma imagem, suas coordenadas iniciais, altura e largura recorta a imagem partindo da coordenada central.
-	"""
 	x_center = int((2 * x + face_width)/2)
 	y_center = int((2 * y + face_height)/2)
 
@@ -16,9 +13,6 @@ def cropImage(image, x, y, face_width, face_height, crop_width, crop_height):
 
 
 def resizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
-	"""
-	Dado uma imagem, uma altura e uma largura, re-dimensiona a imagem mantendo a proporção entre altura e largura
-	"""
 	(h, w) = image.shape[:2]
 
 	if width is None and height is None:
@@ -34,28 +28,18 @@ def resizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
 
 
 def rotateImage(image, angle):
-	"""
-	Dado uma imagem e um ângulo, rotaciona a imagem de acordo com seu centro.
-	Método desenvolvido pela Tuany.
-	"""
-
-	# Get the image size
-	# No that's not an error - NumPy stores image matricies backwards
 	image_size = (image.shape[1], image.shape[0])
 	image_center = tuple(np.array(image_size) / 2)
 
-	# Convert the OpenCV 3x2 rotation matrix to 3x3
 	rot_mat = np.vstack(
 		[cv2.getRotationMatrix2D(image_center, angle, 1.0), [0, 0, 1]]
 	)
 
 	rot_mat_notranslate = np.array(rot_mat[0:2, 0:2])
 
-	# Shorthand for below calcs
 	image_w2 = image_size[0] * 0.5
 	image_h2 = image_size[1] * 0.5
 
-	# Obtain the rotated coordinates of the image corners
 	rotated_coords = [
 		(np.array([-image_w2, image_h2]) * rot_mat_notranslate).A[0],
 		(np.array([image_w2, image_h2]) * rot_mat_notranslate).A[0],
@@ -63,7 +47,6 @@ def rotateImage(image, angle):
 		(np.array([image_w2, -image_h2]) * rot_mat_notranslate).A[0]
 	]
 
-	# Find the size of the new image
 	x_coords = [pt[0] for pt in rotated_coords]
 	x_pos = [x for x in x_coords if x > 0]
 	x_neg = [x for x in x_coords if x < 0]
@@ -80,17 +63,14 @@ def rotateImage(image, angle):
 	new_w = int(abs(right_bound - left_bound))
 	new_h = int(abs(top_bound - bot_bound))
 
-	# We require a translation matrix to keep the image centred
 	trans_mat = np.array([
 		[1, 0, int(new_w * 0.5 - image_w2)],
 		[0, 1, int(new_h * 0.5 - image_h2)],
 		[0, 0, 1]
 	])
 
-	# Compute the tranform for the combined rotation and translation
 	affine_mat = (np.array(trans_mat) * np.array(rot_mat))[0:2, :]
 
-	# Apply the transform
 	result = cv2.warpAffine(
 		image,
 		affine_mat,
@@ -102,22 +82,19 @@ def rotateImage(image, angle):
 
 
 def findEyeCoordinates(img, h, w1, w2):
-	"""
-	Dado uma imagem, uma altura e as laguras, encontra a coordenada dos olhos.
-	"""
-	sumX = 0
-	sumY = 0
-	countX = 0
-	countY = 0
+	sum_x = 0
+	sum_y = 0
+	count_x = 0
+	count_y = 0
 	for i in range(w1, w2):
 		for j in range(0, h):
 			px = img[j, i]
 			ent = px.astype(np.int)
 			if 250 <= ent <= 275:
-				sumX = sumX + i
-				sumY = sumY + j
-				countX = countX + 1
-				countY = countY + 1
-	x = sumX / countX
-	y = sumY / countY
+				sum_x = sum_x + i
+				sum_y = sum_y + j
+				count_x = count_x + 1
+				count_y = count_y + 1
+	x = sum_x / count_x
+	y = sum_y / count_y
 	return x, y
