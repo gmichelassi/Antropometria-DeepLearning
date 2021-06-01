@@ -46,12 +46,12 @@ def get_layers(architeture, last_layers):
 		x = Dense(4096, activation='relu', name='custom_fc1')(x)
 		x = Dense(1024, activation='relu', name='custom_fc2')(x)
 		x = Dense(1024, activation='relu', name='custom_fc3')(x)
-		x = Dense(516, activation='relu', name='custom_fc4')(x)
-		x = Dense(256, activation='relu', name='custom_fc5')(x)
-		x = Dense(32, activation='relu', name='custom_fc6')(x)
-		x = Dense(32, activation='relu', name='custom_fc7')(x)
-		x = Dense(16, activation='relu', name='custom_fc8')(x)
-		x = Dense(16, activation='relu', name='custom_fc9')(x)
+		x = Dense(516, activation='tanh', name='custom_fc4')(x)
+		x = Dense(256, activation='tanh', name='custom_fc5')(x)
+		x = Dense(32, activation='tanh', name='custom_fc6')(x)
+		x = Dense(32, activation='tanh', name='custom_fc7')(x)
+		x = Dense(16, activation='tanh', name='custom_fc8')(x)
+		x = Dense(16, activation='tanh', name='custom_fc9')(x)
 		out = Dense(1, activation='sigmoid', name='custom_fc10')(x)
 		return out
 	else:

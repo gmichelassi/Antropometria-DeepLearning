@@ -62,7 +62,7 @@ def test_current_fold(x, y, train_index, test_index, custom_vgg_face, epochs):
 	X_train, y_train = x[train_index], y[train_index]
 	X_test, y_test = x[test_index], y[test_index]
 
-	custom_vgg_face.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs)
-	results = custom_vgg_face.evaluate()
+	custom_vgg_face.fit(X_train, y_train, epochs=epochs)
+	results = custom_vgg_face.evaluate(X_test, y_test)
 
 	return results
