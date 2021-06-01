@@ -36,7 +36,7 @@ def run_neural_network(x, y, image_names):
 	loss_functions = get_loss_function()
 	architetures = get_architeture()
 	current_test = 0
-	num_of_tests = len(optimizers) + len(epochs) + len(loss_functions) + len(architetures)
+	num_of_tests = len(optimizers) * len(epochs) * len(loss_functions) * len(architetures)
 
 	for architeture in architetures:
 		for epoch in epochs:
@@ -106,5 +106,5 @@ if __name__ == '__main__':
 	images_paths = [cte.CASOS, cte.CONTROLES]
 
 	x, y, image_names = load_data(images_paths)
-	print(len(y))
+
 	run_neural_network(x, y, image_names)
