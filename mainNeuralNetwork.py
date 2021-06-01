@@ -103,7 +103,9 @@ def run_neural_network(x, y, image_names):
 
 
 if __name__ == '__main__':
-	images_paths = [cte.CASOS, cte.CONTROLES]
+	casos = cte.CROPPED + '/casos' + cte.DSCN_MASK
+	controles = cte.CROPPED + '/controles' + cte.DSCN_MASK
+	images_paths = [casos, controles]
 
 	x, y, image_names = load_data(images_paths)
 
