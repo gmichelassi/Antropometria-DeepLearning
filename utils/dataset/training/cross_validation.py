@@ -28,7 +28,7 @@ def PRP2020_cross_validation(x, y, img_names, custom_vgg_face, epochs):
 	loss, accuracy, precision, recall, auc = [], [], [], [], []
 	k = 0
 	img_names = [x.lower() for x in img_names]
-	with open('../../../config/cross_val_folds_PRP.json', 'r') as jsonfile:
+	with open('config/cross_val_folds_PRP.json', 'r') as jsonfile:
 		folds = json.load(jsonfile)
 
 	for current_fold in folds:
