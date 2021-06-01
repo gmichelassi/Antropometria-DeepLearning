@@ -5,7 +5,7 @@ from tensorflow.keras.layers import Dropout, Flatten, Dense, BatchNormalization
 def get_optimizers():
 	return [
 		{'opt': SGD(),  'params': 'name=SGD,  lr=default, m=default'},
-		{'opt': Adam(), 'params': 'name=Adam, lr=default'}
+		# {'opt': Adam(), 'params': 'name=Adam, lr=default'}
 	]
 
 
@@ -19,7 +19,7 @@ def get_epochs():
 
 def get_architeture():
 	return [
-		'oneDenseFullyConnectedSigmoid'
+		'FlattenAndDense'
 	]
 
 
