@@ -63,9 +63,9 @@ def run_neural_network(x, y, image_names):
 					log.info(f"{current_test}/{num_of_tests} - Running {CROSS_VAL_TYPE} cross validation")
 
 					if CROSS_VAL_TYPE == 'default':
-						loss, accuracy, precision, recall, auc = default_cross_validation(x, y, transfer_model, epochs)
+						loss, accuracy, precision, recall, auc = default_cross_validation(x, y, transfer_model, epoch)
 					elif CROSS_VAL_TYPE == 'PRP2020':
-						loss, accuracy, precision, recall, auc = PRP2020_cross_validation(x, y, image_names, transfer_model, epochs)
+						loss, accuracy, precision, recall, auc = PRP2020_cross_validation(x, y, image_names, transfer_model, epoch)
 					else:
 						log.error("Não foi detectado qual validação cruzada deve ser executada")
 						return
