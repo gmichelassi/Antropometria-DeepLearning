@@ -28,7 +28,7 @@ def PRP2020_cross_validation(x, y, img_names, custom_vgg_face, epochs):
 	loss, accuracy, precision, recall, auc = [], [], [], [], []
 	k = 0
 	img_names = [x.lower() for x in img_names]
-	with open('/config/cross_val_folds_PRP.json', 'r') as jsonfile:
+	with open('config/cross_val_folds_PRP.json', 'r') as jsonfile:
 		folds = json.load(jsonfile)
 
 	for current_fold in folds:
@@ -62,7 +62,7 @@ def test_current_fold(x, y, train_index, test_index, custom_vgg_face, epochs):
 	X_train, y_train = x[train_index], y[train_index]
 	X_test, y_test = x[test_index], y[test_index]
 
-	custom_vgg_face.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs)
-	results = custom_vgg_face.evaluate()
+	custom_vgg_face.fit(X_train, y_train, epochs=epochs)
+	results = custom_vgg_face.evaluate(X_test, y_test)
 
 	return results

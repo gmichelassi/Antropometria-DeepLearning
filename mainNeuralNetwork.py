@@ -36,7 +36,7 @@ def run_neural_network(x, y, image_names):
 	loss_functions = get_loss_function()
 	architetures = get_architeture()
 	current_test = 0
-	num_of_tests = len(optimizers) + len(epochs) + len(loss_functions) + len(architetures)
+	num_of_tests = len(optimizers) * len(epochs) * len(loss_functions) * len(architetures)
 
 	for architeture in architetures:
 		for epoch in epochs:
@@ -63,9 +63,9 @@ def run_neural_network(x, y, image_names):
 					log.info(f"{current_test}/{num_of_tests} - Running {CROSS_VAL_TYPE} cross validation")
 
 					if CROSS_VAL_TYPE == 'default':
-						loss, accuracy, precision, recall, auc = default_cross_validation(x, y, transfer_model, epochs)
+						loss, accuracy, precision, recall, auc = default_cross_validation(x, y, transfer_model, epoch)
 					elif CROSS_VAL_TYPE == 'PRP2020':
-						loss, accuracy, precision, recall, auc = PRP2020_cross_validation(x, y, image_names, transfer_model, epochs)
+						loss, accuracy, precision, recall, auc = PRP2020_cross_validation(x, y, image_names, transfer_model, epoch)
 					else:
 						log.error("Não foi detectado qual validação cruzada deve ser executada")
 						return
@@ -103,8 +103,10 @@ def run_neural_network(x, y, image_names):
 
 
 if __name__ == '__main__':
-	images_paths = [cte.CASOS, cte.CONTROLES]
+	casos = cte.CROPPED + '/casos' + cte.DSCN_MASK
+	controles = cte.CROPPED + '/controles' + cte.DSCN_MASK
+	images_paths = [casos, controles]
 
 	x, y, image_names = load_data(images_paths)
-	print(len(y))
+
 	run_neural_network(x, y, image_names)
