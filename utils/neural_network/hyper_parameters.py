@@ -43,10 +43,8 @@ def get_layers(architeture, last_layers):
 		return out
 	elif architeture == 'FlattenAndDense':
 		x = Flatten(name='flatten')(last_layers)
-		x = Dense(16384, activation='relu', name='custom_fc1')(x)
-		x = Dense(16384, activation='relu', name='custom_fc2')(x)
-		x = Dense(4096, activation='relu', name='custom_fc3')(x)
-		out = Dense(1, activation='sigmoid', name='custom_fc10')(x)
+		x = Dense(32, activation='relu', name='custom_fc1')(x)
+		out = Dense(1, activation='sigmoid', name='custom_fc2')(x)
 		return out
 	else:
 		raise ValueError('It was not possible to find {0} architeture'.format(architeture))

@@ -34,11 +34,11 @@ def run_neural_network(x, y, image_names):
 	optimizers = get_optimizers()
 	epochs = get_epochs()
 	loss_functions = get_loss_function()
-	architetures = get_architeture()
+	architectures = get_architeture()
 	current_test = 0
-	num_of_tests = len(optimizers) * len(epochs) * len(loss_functions) * len(architetures)
+	num_of_tests = len(optimizers) * len(epochs) * len(loss_functions) * len(architectures)
 
-	for architeture in architetures:
+	for architeture in architectures:
 		for epoch in epochs:
 			for loss_function in loss_functions:
 				for optimizer in optimizers:
