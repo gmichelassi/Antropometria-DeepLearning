@@ -44,7 +44,7 @@ def get_layers(architeture, last_layers):
 	elif architeture == 'FlattenAndDense':
 		x = Flatten(name='flatten')(last_layers)
 		x = Dense(32, activation='relu', name='custom_fc1')(x)
-		out = Dense(1, activation='sigmoid', name='custom_fc2')(x)
+		out = Dense(1, activation='softmax', name='custom_fc2')(x)
 		return out
 	else:
 		raise ValueError('It was not possible to find {0} architeture'.format(architeture))
